@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { useSpring, animated } from 'react-spring';
+import Feather from 'feathered';
+import { Link } from 'react-router-dom';
 
 export default function Deck({ deck }) {
   const [held, setHeld] = useState([]);
@@ -10,7 +12,7 @@ export default function Deck({ deck }) {
   const [next, setNext] = useState(undefined);
   const [transition, setTransition] = useState(false);
   const { transform, opacity } = useSpring({
-    opacity: transition ? .6 : 0,
+    opacity: transition ? 0.6 : 0,
     transform: `perspective(600px) rotateY(${transition ? -180 : 0}deg)`,
     config: { mass: 5, tension: 500, friction: 80, duration: 300 },
   });
@@ -55,6 +57,7 @@ export default function Deck({ deck }) {
 
   function addHeld() {
     // add current to held list
+    if (held.findIndex(item => item.kana === current.kana) !== -1) return;
     setHeld([...held, current]);
   }
 
@@ -62,7 +65,7 @@ export default function Deck({ deck }) {
     // remove index from held list
   }
 
-  if (!current) {
+  if (!current && deck.length) {
     setCurrent(chooseRandomCard());
   }
 
@@ -80,17 +83,34 @@ export default function Deck({ deck }) {
             >
               {current.kana}
             </Card>
-            <Card visible={!transition} style={{ opacity: opacity.interpolate(o => 1 - o) }}>{next ? next.kana : current.kana}</Card>
+            <Card
+              visible={!transition}
+              style={{ opacity: opacity.interpolate(o => 1 - o) }}
+            >
+              {next ? next.kana : current.kana}
+            </Card>
             <Answer visible={visible}>{current.sound}</Answer>
           </CenterContainer>
         </View>
       )}
       <Actions>
-        <ActionButton onClick={addHeld}>Hold</ActionButton>
-        <ActionButton center onClick={toggleAnswer}>
-          {visible ? 'Hide' : 'Show'}
+        <ActionButton as={Link} to="/">
+          <Feather icon="home" color="#fff" size={32} />
         </ActionButton>
-        <ActionButton onClick={nextCard}>Next</ActionButton>
+        <ActionButton onClick={addHeld}>
+          <Feather icon="box" color="#fff" size={32} />
+          {held.length}
+        </ActionButton>
+        <ActionButton onClick={toggleAnswer}>
+          {visible ? (
+            <Feather icon="eye-off" color="#fff" size={32} />
+          ) : (
+            <Feather icon="eye" color="#fff" size={32} />
+          )}
+        </ActionButton>
+        <ActionButton last onClick={nextCard}>
+          <Feather icon="arrow-right" color="#fff" size={32} />
+        </ActionButton>
       </Actions>
     </Container>
   );
@@ -105,7 +125,7 @@ const Container = styled('div')`
 
 const Actions = styled('nav')`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   border-top: 2px solid white;
 `;
 
@@ -114,12 +134,15 @@ const ActionButton = styled('button')`
   color: white;
   border: none;
   font-size: 1.25rem;
+  border-right: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   ${p =>
-    p.center &&
+    p.last &&
     `
-    border-right: 2px solid white;
-    border-left: 2px solid white;
+    border: none;
   `}
 
   transition: background-color .1s ease;
@@ -153,7 +176,7 @@ const Card = styled(animated.div)`
 
   display: ${p => (p.visible ? 'flex' : 'none')};
 
-  transition: color .25s ease;
+  transition: color 0.25s ease;
 
   ${p => p.rotator && 'color: transparent;'}
 `;
