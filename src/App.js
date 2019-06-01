@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Fragment } from 'react';
+import styled from '@emotion/styled';
+import { Global, css } from '@emotion/core';
+// Components
+import Deck from './components/Deck';
+// Variables
+import kana from './data/kana';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Fragment>
+      <Global
+        styles={css`
+          @import url('https://fonts.googleapis.com/css?family=Open+Sans:600&display=swap');
+
+          * {
+            font-family: 'Open Sans', sans-serif;
+          }
+
+          body,
+          #root {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+          }
+        `}
+      />
+      <Container>
+        <Deck deck={kana.hiragana} />
+      </Container>
+    </Fragment>
   );
 }
+
+const Container = styled('div')`
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: black;
+`;
 
 export default App;
