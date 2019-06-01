@@ -12,10 +12,10 @@ function App() {
       <Fragment>
         <Global
           styles={css`
-            @import url('https://fonts.googleapis.com/css?family=Open+Sans:600&display=swap');
+           @import url('https://fonts.googleapis.com/css?family=Space+Mono:400,700&display=swap');
 
             * {
-              font-family: 'Open Sans', sans-serif;
+              font-family: 'Space Mono', monospace;
             }
 
             body,

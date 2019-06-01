@@ -141,8 +141,7 @@ const ActionButton = styled('button')`
 
   transition: background-color .1s ease;
 
-  &:active,
-  &:focus {
+  &:active {
     background-color: white;
     color: black;
   }

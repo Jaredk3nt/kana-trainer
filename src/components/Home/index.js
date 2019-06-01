@@ -5,21 +5,22 @@ import styled from '@emotion/styled';
 export default function Home({}) {
   return (
     <Container>
-    <Header>Kana Trainer</Header>
-    <Anchors>
-      <Anchor to={{ pathname: '/kana', search: '?sets=hiragana' }} first>
-        Hiragana
-      </Anchor>
-      <Anchor to={{ pathname: '/kana', search: '?sets=katakana' }}>
-        Katakana
-      </Anchor>
-      <Anchor
-        to={{ pathname: '/kana', search: '?sets=hiragana,katakana' }}
-        last
-      >
-        Combo
-      </Anchor>
-    </Anchors>
+      <Header>Kana Trainer</Header>
+      <Anchors>
+        <Anchor to={{ pathname: '/kana', search: '?sets=hiragana' }}>
+          Hiragana
+        </Anchor>
+        <Anchor to={{ pathname: '/kana', search: '?sets=katakana' }}>
+          Katakana
+        </Anchor>
+        <Anchor to={{ pathname: '/kana', search: '?sets=hiragana,katakana' }}>
+          Combo
+        </Anchor>
+        <Anchor disabled last>
+          Custom
+          <p className="subtext">(Coming Soon)</p>
+        </Anchor>
+      </Anchors>
     </Container>
   );
 }
@@ -45,7 +46,9 @@ const Anchors = styled('nav')`
 
 const Anchor = styled(Link)`
   width: 80%;
-  border: 2px solid white;
+  border-left: 2px solid white;
+  border-right: 2px solid white;
+  border-top: 2px solid white;
   color: white;
   font-size: 1.75rem;
   text-align: center;
@@ -55,11 +58,8 @@ const Anchor = styled(Link)`
   text-decoration: none;
 
   ${p => {
-    if (p.first) {
-      return 'border-bottom: none;';
-    }
     if (p.last) {
-      return 'border-top: none';
+      return 'border-bottom: 2px solid white;';
     }
   }}
 
@@ -67,5 +67,19 @@ const Anchor = styled(Link)`
   &:focus {
     background-color: white;
     color: black;
+  }
+
+  ${p =>
+    p.disabled &&
+    `
+    background-color: #333;
+    color: #999;
+    pointer-events: none;
+    `}
+
+  .subtext {
+    font-size: 0.85rem;
+    color: #999;
+    margin: 0.1em 0em 0em;
   }
 `;
