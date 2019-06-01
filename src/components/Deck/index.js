@@ -4,16 +4,15 @@ import { useSpring, animated } from 'react-spring';
 import Feather from 'feathered';
 import { Link } from 'react-router-dom';
 
+// TODO: add "edit" functionality to held
 export default function Deck({ deck }) {
   const [held, setHeld] = useState([]);
   const [previous, setPrevious] = useState(undefined);
   const [visible, setVisible] = useState(false);
   const [current, setCurrent] = useState(undefined);
   const [next, setNext] = useState(undefined);
-  const [transition, setTransition] = useState(false);
-  const { transform, opacity } = useSpring({
-    opacity: transition ? 0.6 : 0,
-    transform: `perspective(600px) rotateY(${transition ? -180 : 0}deg)`,
+  const { transform } = useSpring({
+    transform: `perspective(600px) rotateY(${visible ? -180 : 0}deg)`,
     config: { mass: 5, tension: 500, friction: 80, duration: 300 },
   });
 
@@ -39,16 +38,12 @@ export default function Deck({ deck }) {
     setVisible(false);
     // pick new (ensuring not in held or previous)
     const nextCard = chooseRandomCard();
-    setTransition(true);
-    setTimeout(() => {
-      setCurrent(next);
-      setNext(undefined);
-      setTransition(false);
-    }, 300);
     // assign old to previous
     setPrevious(current);
-    // assign new to current
-    setNext(nextCard);
+    setTimeout(() => {
+      // assign new to current
+      setCurrent(nextCard);
+    }, 150);
   }
 
   function toggleAnswer() {
@@ -59,10 +54,6 @@ export default function Deck({ deck }) {
     // add current to held list
     if (held.findIndex(item => item.kana === current.kana) !== -1) return;
     setHeld([...held, current]);
-  }
-
-  function removeHeld() {
-    // remove index from held list
   }
 
   if (!current && deck.length) {
@@ -77,19 +68,22 @@ export default function Deck({ deck }) {
         <View>
           <CenterContainer>
             <Card
-              rotator
-              visible={transition}
-              style={{ opacity: opacity.interpolate(o => 1 - o), transform }}
+              style={{
+                transform: transform.interpolate(t => `${t} rotateX(180deg)`),
+              }}
             >
-              {current.kana}
+              <Rotator>
+                <CardKana dim>{current.kana}</CardKana>
+                <CardSound>{current.sound}</CardSound>
+              </Rotator>
             </Card>
             <Card
-              visible={!transition}
-              style={{ opacity: opacity.interpolate(o => 1 - o) }}
+              style={{
+                transform,
+              }}
             >
-              {next ? next.kana : current.kana}
+              <CardKana>{current.kana}</CardKana>
             </Card>
-            <Answer visible={visible}>{current.sound}</Answer>
           </CenterContainer>
         </View>
       )}
@@ -166,34 +160,52 @@ const CenterContainer = styled('div')`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 `;
 
 const Card = styled(animated.div)`
-  color: white;
-  font-size: 7rem;
-  padding: 0.75em 0.6em;
+  background-color: black;
+  width: 250px;
+  height: 400px;
+  box-sizing: border-box;
   border: 2px solid white;
-
-  display: ${p => (p.visible ? 'flex' : 'none')};
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   transition: color 0.25s ease;
-
-  ${p => p.rotator && 'color: transparent;'}
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 `;
 
-const Answer = styled('div')`
+const CardKana = styled('p')`
+  font-size: 7rem;
+  color: ${p => (p.dim ? 'black' : 'white')};
+  margin: 0;
+  line-height: 1;
+
+  ${p =>
+    p.dim &&
+    `
+  text-shadow:
+   -1px -1px 0 #fff,  
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff,
+     1px 1px 0 #fff;
+  `}
+`;
+const CardSound = styled('p')`
+  font-size: 3rem;
   color: white;
-  opacity: ${p => (p.visible ? 1 : 0)};
-  font-family: sans-serif;
-  font-size: 4rem;
-  height: 100px;
+  margin: 0;
+  line-height: 1;
+`;
+
+const Rotator = styled('span')`
+  transform: rotate(180deg);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-
-  transition: opacity 0.1s ease;
-
-  &:hover {
-    cursor: pointer;
-  }
 `;
