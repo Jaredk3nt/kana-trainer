@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 // Components
 import Home from './components/Home';
 import Player from './components/Player';
+import CharacterSelect from './components/CharacterSelect';
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
       <Fragment>
         <Global
           styles={css`
-           @import url('https://fonts.googleapis.com/css?family=Space+Mono:400,700&display=swap');
+            @import url('https://fonts.googleapis.com/css?family=Space+Mono:400,700&display=swap');
 
             * {
               font-family: 'Space Mono', monospace;
@@ -24,12 +25,14 @@ function App() {
               height: 100vh;
               margin: 0;
               padding: 0;
+              background-color: #000;
             }
           `}
         />
         <Container>
           <Route path="/" exact component={Home} />
           <Route path="/kana" component={Player} />
+          <Route path="/custom" exact component={CharacterSelect} />
         </Container>
       </Fragment>
     </Router>

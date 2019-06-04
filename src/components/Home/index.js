@@ -16,10 +16,7 @@ export default function Home({}) {
         <Anchor to={{ pathname: '/kana', search: '?sets=hiragana,katakana' }}>
           Combo
         </Anchor>
-        <Anchor disabled last>
-          Custom
-          <p className="subtext">(Coming Soon)</p>
-        </Anchor>
+        <Anchor to='/custom' last>Custom</Anchor>
       </Anchors>
     </Container>
   );

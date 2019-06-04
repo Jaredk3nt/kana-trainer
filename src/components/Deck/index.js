@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { useSpring, animated } from 'react-spring';
 import Feather from 'feathered';
 import { Link } from 'react-router-dom';
+const EMPTY_MESSAGE = "おめでとうございます!"
 
 // TODO: add "edit" functionality to held
 export default function Deck({ deck }) {
@@ -34,6 +35,7 @@ export default function Deck({ deck }) {
   }
 
   function nextCard() {
+    if (!deck.length) return;
     // set answer to invisible
     setVisible(false);
     // pick new (ensuring not in held or previous)
@@ -52,41 +54,46 @@ export default function Deck({ deck }) {
 
   function addHeld() {
     // add current to held list
-    if (held.findIndex(item => item.kana === current.kana) !== -1) return;
+    if (!current || held.findIndex(item => item.kana === current.kana) !== -1) return;
     setHeld([...held, current]);
+    nextCard();
   }
 
-  if (!current && deck.length) {
+  if (!current && deck.length && held.length < deck.length) {
     setCurrent(chooseRandomCard());
   }
 
-  console.log({ held, previous, visible, current });
+  console.log({ held, previous, visible, current, deck });
 
   return (
     <Container>
-      {current && (
-        <View>
-          <CenterContainer>
-            <Card
-              style={{
-                transform: transform.interpolate(t => `${t} rotateX(180deg)`),
-              }}
-            >
-              <Rotator>
-                <CardKana dim>{current.kana}</CardKana>
-                <CardSound>{current.sound}</CardSound>
-              </Rotator>
-            </Card>
-            <Card
-              style={{
-                transform,
-              }}
-            >
-              <CardKana>{current.kana}</CardKana>
-            </Card>
-          </CenterContainer>
-        </View>
-      )}
+      <View>
+        <CenterContainer>
+          {current ? (
+            <>
+              <Card
+                style={{
+                  transform: transform.interpolate(t => `${t} rotateX(180deg)`),
+                }}
+              >
+                <Rotator>
+                  <CardKana dim>{current.kana}</CardKana>
+                  <CardSound>{current.sound}</CardSound>
+                </Rotator>
+              </Card>
+              <Card
+                style={{
+                  transform,
+                }}
+              >
+                <CardKana>{current.kana}</CardKana>
+              </Card>
+            </>
+          ) : (
+            <Message>{EMPTY_MESSAGE}</Message>
+          )}
+        </CenterContainer>
+      </View>
       <Actions>
         <ActionButton as={Link} to="/">
           <Feather icon="home" color="#fff" size={32} />
@@ -207,4 +214,9 @@ const Rotator = styled('span')`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+`;
+
+const Message = styled('p')`
+  color: white;
+  font-size: 1.5rem;
 `;
