@@ -86,7 +86,9 @@ export default withRouter(function CharacterSelect({ history }) {
         <Back to="/">
           <Feather icon="home" color="#fff" size={32} />
         </Back>
-        <Submit onClick={startPlayer} active={characterCount() > 0}>Begin</Submit>
+        <Submit onClick={startPlayer} active={characterCount() > 0}>
+          Begin
+        </Submit>
       </Actions>
     </>
   );
@@ -102,6 +104,10 @@ const SelectContainer = styled('main')`
   box-sizing: border-box;
   width: 100%;
   margin-top: 50%;
+
+  @media (min-width: 800px) {
+    margin-top: 0%;
+  }
 `;
 
 const SetTitle = styled('h1')`
@@ -138,7 +144,6 @@ const Back = styled(Link)`
   align-items: center;
   justify-content: center;
   border: 2px solid white;
-  border-right: none;
   background-color: black;
   box-sizing: border-box;
   text-decoration: none;
@@ -153,15 +158,16 @@ const Back = styled(Link)`
 
 const Submit = styled('button')`
   border: 2px solid white;
+  border-left: none;
   font-size: 1.2rem;
   height: 100%;
   width: 100%;
   box-sizing: border-box;
 
-  transition: background-color .5 ease;
+  transition: background-color 0.5 ease;
 
-  color: ${p => p.active ? 'black': 'white'};
-  background-color: ${p => p.active ? 'white': 'black'};
+  color: ${p => (p.active ? 'black' : 'white')};
+  background-color: ${p => (p.active ? 'white' : 'black')};
 
   &:hover {
     cursor: pointer;

@@ -3,21 +3,24 @@ import styled from '@emotion/styled';
 import { useSpring, animated } from 'react-spring';
 import Feather from 'feathered';
 import { Link } from 'react-router-dom';
-const EMPTY_MESSAGE = "おめでとうございます!"
+const EMPTY_MESSAGE = 'おめでとうございます!';
 
 // TODO: add "edit" functionality to held
 export default function Deck({ deck }) {
+  const [reverse, setReverse] = useState(false);
   const [held, setHeld] = useState([]);
   const [previous, setPrevious] = useState(undefined);
   const [visible, setVisible] = useState(false);
   const [current, setCurrent] = useState(undefined);
-  const [next, setNext] = useState(undefined);
   const { transform } = useSpring({
     transform: `perspective(600px) rotateY(${visible ? -180 : 0}deg)`,
     config: { mass: 5, tension: 500, friction: 80, duration: 300 },
   });
 
   function chooseRandomCard() {
+    // if (deck.length <= 1) {
+    //   return;
+    // }
     const activeSet = deck.filter(card => {
       if (current && current.kana === card.kana) {
         return false;
@@ -35,7 +38,7 @@ export default function Deck({ deck }) {
   }
 
   function nextCard() {
-    if (!deck.length) return;
+    if (deck.length <= 1) return;
     // set answer to invisible
     setVisible(false);
     // pick new (ensuring not in held or previous)
@@ -52,15 +55,25 @@ export default function Deck({ deck }) {
     setVisible(!visible);
   }
 
+  function toggleReverse() {
+    setReverse(!reverse);
+  }
+
   function addHeld() {
     // add current to held list
-    if (!current || held.findIndex(item => item.kana === current.kana) !== -1) return;
+    if (!current || held.findIndex(item => item.kana === current.kana) !== -1)
+      return;
+    if (deck.length === 1) {
+      setHeld([...held, current]);
+      return setCurrent(undefined);
+    }
     setHeld([...held, current]);
     nextCard();
   }
 
   if (!current && deck.length && held.length < deck.length) {
     setCurrent(chooseRandomCard());
+    // nextCard();
   }
 
   console.log({ held, previous, visible, current, deck });
@@ -72,6 +85,7 @@ export default function Deck({ deck }) {
           {current ? (
             <>
               <Card
+                onClick={toggleAnswer}
                 style={{
                   transform: transform.interpolate(t => `${t} rotateX(180deg)`),
                 }}
@@ -82,6 +96,7 @@ export default function Deck({ deck }) {
                 </Rotator>
               </Card>
               <Card
+                onClick={toggleAnswer}
                 style={{
                   transform,
                 }}
@@ -121,13 +136,14 @@ const Container = styled('div')`
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-rows: 1fr 75px;
+  grid-template-rows: 1fr 86px;
 `;
 
 const Actions = styled('nav')`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  border-top: 2px solid white;
+  border: 2px solid white;
+  margin: 0px 16px 16px;
 `;
 
 const ActionButton = styled('button')`
