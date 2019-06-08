@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { useSpring, animated } from 'react-spring';
 import Feather from 'feathered';
 import { Link } from 'react-router-dom';
+// Variables
 const EMPTY_MESSAGE = 'おめでとうございます!';
 
 // TODO: add "edit" functionality to held
@@ -12,15 +13,19 @@ export default function Deck({ deck }) {
   const [previous, setPrevious] = useState(undefined);
   const [visible, setVisible] = useState(false);
   const [current, setCurrent] = useState(undefined);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { transform } = useSpring({
     transform: `perspective(600px) rotateY(${visible ? -180 : 0}deg)`,
     config: { mass: 5, tension: 500, friction: 80, duration: 300 },
   });
+  const styles = useSpring({
+    display: menuOpen ? 'block' : 'none',
+    bottom: menuOpen ? '100%' : '0%',
+    zIndex: menuOpen ? '1' : '-1',
+    config: { mass: 5, tension: 500, friction: 80 },
+  });
 
   function chooseRandomCard() {
-    // if (deck.length <= 1) {
-    //   return;
-    // }
     const activeSet = deck.filter(card => {
       if (current && current.kana === card.kana) {
         return false;
@@ -59,6 +64,10 @@ export default function Deck({ deck }) {
     setReverse(!reverse);
   }
 
+  function toggleMenu() {
+    setMenuOpen(!menuOpen);
+  }
+
   function addHeld() {
     // add current to held list
     if (!current || held.findIndex(item => item.kana === current.kana) !== -1)
@@ -73,10 +82,7 @@ export default function Deck({ deck }) {
 
   if (!current && deck.length && held.length < deck.length) {
     setCurrent(chooseRandomCard());
-    // nextCard();
   }
-
-  console.log({ held, previous, visible, current, deck });
 
   return (
     <Container>
@@ -91,8 +97,8 @@ export default function Deck({ deck }) {
                 }}
               >
                 <Rotator>
-                  <CardKana dim>{current.kana}</CardKana>
-                  <CardSound>{current.sound}</CardSound>
+                  <CardKana dim={!reverse}>{current.kana}</CardKana>
+                  <CardSound dim={reverse}>{current.sound}</CardSound>
                 </Rotator>
               </Card>
               <Card
@@ -101,7 +107,11 @@ export default function Deck({ deck }) {
                   transform,
                 }}
               >
-                <CardKana>{current.kana}</CardKana>
+                {reverse ? (
+                  <CardSound>{current.sound}</CardSound>
+                ) : (
+                  <CardKana>{current.kana}</CardKana>
+                )}
               </Card>
             </>
           ) : (
@@ -110,8 +120,16 @@ export default function Deck({ deck }) {
         </CenterContainer>
       </View>
       <Actions>
-        <ActionButton as={Link} to="/">
-          <Feather icon="home" color="#fff" size={32} />
+        <MoreActions style={styles}>
+          <ActionButton as={Link} to="/" vertical last>
+            <Feather icon="home" color="#fff" size={32} />
+          </ActionButton>
+          <ActionButton onClick={toggleReverse} vertical>
+            <Feather icon="rotate-cw" color="#fff" size={32} />
+          </ActionButton>
+        </MoreActions>
+        <ActionButton onClick={toggleMenu}>
+          <Feather icon="more-horizontal" color="#fff" size={32} />
         </ActionButton>
         <ActionButton onClick={addHeld}>
           <Feather icon="box" color="#fff" size={32} />
@@ -139,14 +157,25 @@ const Container = styled('div')`
   grid-template-rows: 1fr 86px;
 `;
 
+const MoreActions = styled(animated.nav)`
+  position: absolute;
+  bottom: 100%;
+  width: calc(25% - 2px);
+  border: 2px solid white;
+  left: -2px;
+`;
+
 const Actions = styled('nav')`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   border: 2px solid white;
   margin: 0px 16px 16px;
+  z-index: 9;
+  position: relative;
 `;
 
 const ActionButton = styled('button')`
+  position: relative;
   background-color: transparent;
   color: white;
   border: none;
@@ -155,12 +184,15 @@ const ActionButton = styled('button')`
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 100%;
+  min-height: 67px;
+  box-sizing: border-box;
+  background-color: black;
+  width: 100%;
 
-  ${p =>
-    p.last &&
-    `
-    border: none;
-  `}
+  ${p => p.vertical && `border-right: none; border-top: 2px solid white;`}
+
+  ${p => p.last && `border: none;`}
 
   transition: background-color .1s ease;
 
@@ -219,9 +251,19 @@ const CardKana = styled('p')`
 `;
 const CardSound = styled('p')`
   font-size: 3rem;
-  color: white;
+  color: ${p => (p.dim ? 'black' : 'white')};
   margin: 0;
   line-height: 1;
+
+  ${p =>
+    p.dim &&
+    `
+  text-shadow:
+   -1px -1px 0 #fff,  
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff,
+     1px 1px 0 #fff;
+  `}
 `;
 
 const Rotator = styled('span')`
