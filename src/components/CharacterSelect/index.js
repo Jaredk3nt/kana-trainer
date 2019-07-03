@@ -1,13 +1,28 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
 import Feather from 'feathered';
+import { Link } from 'react-router-dom';
+import { useSpring, animated } from 'react-spring';
+import useLSCustomValues from '../../hooks/useLSCustomValues';
 // Data
 import kana from '../../data/kana';
 
 export default withRouter(function CharacterSelect({ history }) {
-  const [characters, setCharacter] = useState({ hiragana: [], katakana: [] });
+  const [customList, addCustom] = useLSCustomValues();
+  const [inputVisible, setInputVisible] = useState(false);
+  const [frontInput, setFrontInput] = useState('');
+  const [backInput, setBackInput] = useState('');
+  const [characters, setCharacter] = useState({
+    hiragana: [],
+    katakana: [],
+    custom: [],
+  });
+  const styles = useSpring({
+    opacity: inputVisible ? '1' : '0',
+    bottom: inputVisible ? '102px' : '80px',
+    config: { mass: 5, tension: 600, friction: 60 },
+  });
 
   function addCharacter(set, index) {
     setCharacter({
@@ -53,6 +68,18 @@ export default withRouter(function CharacterSelect({ history }) {
     );
   }
 
+  function toggleInput() {
+    setInputVisible(!inputVisible);
+  }
+
+  function addCustomCard() {
+    addCustom({ front: frontInput, back: backInput });
+    setFrontInput('');
+    setBackInput('');
+  }
+
+  console.log(customList);
+
   return (
     <>
       <SelectContainer>
@@ -60,6 +87,27 @@ export default withRouter(function CharacterSelect({ history }) {
           Select the kana you want to show up in your training set, then click
           begin.
         </Message>
+        {customList.length > 0 && (
+          <>
+            <SetTitle>Custom</SetTitle>
+            <CharacterList>
+              {customList.map((char, index) => {
+                const selected = isSelected('custom', index);
+                return (
+                  <Character
+                    character={{ kana: char.front, sound: char.back }}
+                    isSelected={selected}
+                    onSelect={
+                      selected
+                        ? () => removeCharacter('custom', index)
+                        : () => addCharacter('custom', index)
+                    }
+                  />
+                );
+              })}
+            </CharacterList>
+          </>
+        )}
         {Object.entries(kana).map(([set, chars]) => (
           <>
             <SetTitle>{set}</SetTitle>
@@ -82,17 +130,97 @@ export default withRouter(function CharacterSelect({ history }) {
           </>
         ))}
       </SelectContainer>
+      <InputContainer style={styles}>
+        <Input
+          placeholder="Front Text"
+          value={frontInput}
+          onChange={e => setFrontInput(e.target.value)}
+        />
+        <Input
+          placeholder="Back Text"
+          value={backInput}
+          onChange={e => setBackInput(e.target.value)}
+        />
+        <InputButton
+          disabled={!frontInput || !backInput}
+          onClick={addCustomCard}
+          type='button'
+        >
+          Add
+        </InputButton>
+      </InputContainer>
+
       <Actions>
         <Back to="/">
           <Feather icon="home" color="#fff" size={32} />
         </Back>
-        <Submit onClick={startPlayer} active={characterCount() > 0}>
+        <ActionButton onClick={toggleInput}>
+          <Feather icon="edit" color="#fff" size={32} />
+        </ActionButton>
+        <ActionButton
+          onClick={startPlayer}
+          active={characterCount() > 0}
+          disabled={characterCount() <= 0}
+        >
           Begin
-        </Submit>
+        </ActionButton>
       </Actions>
     </>
   );
 });
+
+const InputContainer = styled(animated.div)`
+  position: fixed;
+  display: grid;
+  grid-template-columns: 1fr 1fr 25%;
+
+  left: 16px;
+  width: calc(100% - 32px);
+  background-color: black;
+
+  height: 90px;
+  box-sizing: border-box;
+`;
+
+const Input = styled('input')`
+  background-color: black;
+  border: 1px solid white;
+  border-right: none;
+  padding: 16px;
+  color: white;
+  font-size: 1.2rem;
+
+  &::placeholder {
+    color: white;
+    font-size: 1.2rem;
+  }
+
+  &:focus {
+    background-color: white;
+    color: black;
+
+    &::placeholder {
+      color: #333;
+    }
+  }
+`;
+
+const InputButton = styled('button')`
+  border: 1px solid white;
+  border-left: 1px solid black;
+  font-size: 1.2rem;
+  background-color: white;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:disabled {
+    color: #bbb;
+    background-color: black;
+    border-left: 2px solid white;
+  }
+`;
 
 const Message = styled('p')`
   color: rgba(255, 255, 255, 0.75);
@@ -100,7 +228,7 @@ const Message = styled('p')`
 `;
 
 const SelectContainer = styled('main')`
-  padding: 1.5em 1.5em 91px 1.5em;
+  padding: 1.5em 1.5em 25% 1.5em;
   box-sizing: border-box;
   width: 100%;
   margin-top: 50%;
@@ -126,7 +254,7 @@ const CharacterList = styled('ul')`
 const Actions = styled('nav')`
   position: fixed;
   display: grid;
-  grid-template-columns: 25% 1fr;
+  grid-template-columns: 25% 25% 1fr;
   bottom: 16px;
   left: 16px;
   width: calc(100% - 32px);
@@ -156,7 +284,7 @@ const Back = styled(Link)`
   }
 `;
 
-const Submit = styled('button')`
+const ActionButton = styled('button')`
   border: 2px solid white;
   border-left: none;
   font-size: 1.2rem;
@@ -166,7 +294,7 @@ const Submit = styled('button')`
 
   transition: background-color 0.5 ease;
 
-  color: ${p => (p.active ? 'black' : 'white')};
+  color: ${p => (p.active ? 'black' : '#bbb')};
   background-color: ${p => (p.active ? 'white' : 'black')};
 
   &:hover {
@@ -174,6 +302,7 @@ const Submit = styled('button')`
   }
   &:active {
     background-color: #eee;
+    color: white;
   }
 `;
 

@@ -1,8 +1,8 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 
-export default function Home({}) {
+export default function Home() {
   return (
     <Container>
       <Header>Kana Trainer</Header>

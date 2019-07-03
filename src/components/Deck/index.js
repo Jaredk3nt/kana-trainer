@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
-import styled from '@emotion/styled';
-import { useSpring, animated } from 'react-spring';
 import Feather from 'feathered';
+import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
+import { useSpring, animated } from 'react-spring';
+import useKeyListener from '../../hooks/useKeyListener';
 // Variables
 const EMPTY_MESSAGE = 'おめでとうございます!';
+const KEYS = {
+  enter: 13,
+  space: 32,
+  right: 39,
+  f: 70,
+  r: 82,
+  s: 83,
+};
 
 // TODO: add "edit" functionality to held
 export default function Deck({ deck }) {
@@ -24,8 +33,18 @@ export default function Deck({ deck }) {
     zIndex: menuOpen ? '1' : '-1',
     config: { mass: 5, tension: 500, friction: 80 },
   });
+  // Set up keybindings
+  useKeyListener({
+    [KEYS.enter]: nextCard,
+    [KEYS.right]: nextCard,
+    [KEYS.space]: toggleAnswer,
+    [KEYS.s]: addHeld,
+    [KEYS.f]: toggleReverse,
+    [KEYS.r]: toggleReverse,
+  });
 
-  function chooseRandomCard() {
+
+  function _chooseRandomCard() {
     const activeSet = deck.filter(card => {
       if (current && current.kana === card.kana) {
         return false;
@@ -47,7 +66,7 @@ export default function Deck({ deck }) {
     // set answer to invisible
     setVisible(false);
     // pick new (ensuring not in held or previous)
-    const nextCard = chooseRandomCard();
+    const nextCard = _chooseRandomCard();
     // assign old to previous
     setPrevious(current);
     setTimeout(() => {
@@ -81,7 +100,7 @@ export default function Deck({ deck }) {
   }
 
   if (!current && deck.length && held.length < deck.length) {
-    setCurrent(chooseRandomCard());
+    setCurrent(_chooseRandomCard());
   }
 
   return (
