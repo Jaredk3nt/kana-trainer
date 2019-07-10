@@ -73,12 +73,10 @@ export default withRouter(function CharacterSelect({ history }) {
   }
 
   function addCustomCard() {
-    addCustom({ front: frontInput, back: backInput });
+    addCustom({ kana: frontInput, sound: backInput });
     setFrontInput('');
     setBackInput('');
   }
-
-  console.log(customList);
 
   return (
     <>
@@ -95,7 +93,7 @@ export default withRouter(function CharacterSelect({ history }) {
                 const selected = isSelected('custom', index);
                 return (
                   <Character
-                    character={{ kana: char.front, sound: char.back }}
+                    character={{ kana: char.kana, sound: char.sound }}
                     isSelected={selected}
                     onSelect={
                       selected

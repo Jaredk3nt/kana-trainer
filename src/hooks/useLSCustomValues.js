@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 // Variables
 const LS_KEY = 'custom-kana-trainer-values';
 
@@ -6,20 +6,20 @@ function useArrayState(initialArr = []) {
   const [arr, setArr] = useState(initialArr);
 
   function add(item) {
-    const newArr = [...arr, item];
-    setArr(newArr);
+    setArr(prevArr => [...prevArr, item]);
   }
 
   function remove(index) {
-    const newArr = arr.slice(0, index) + arr.slice(index + 1, arr.length);
-    setArr(newArr);
+    setArr(prevArr => {
+      return prevArr.slice(0, index) + prevArr.slice(index + 1, arr.length);
+    });
   }
 
   return [arr, add, remove];
 }
 
 export default function useLSCustomValues() {
-  const [list, addToList, removeFromList] = useArrayState(() => {
+  const [list, add, remove] = useArrayState(() => {
     try {
       const ls = window.localStorage.getItem(LS_KEY);
       const val = ls ? JSON.parse(ls) : [];
@@ -29,23 +29,9 @@ export default function useLSCustomValues() {
     }
   });
 
-  function add(item) {
-    try {
-      addToList(item);
-      window.localStorage.setItem(LS_KEY, JSON.stringify(list));
-    } catch (err) {
-      console.error('Failed to add custom item to localstorage');
-    }
-  }
-
-  function remove(index) {
-    try {
-      removeFromList(index);
-      window.localStorage.setItem(LS_KEY, JSON.stringify(list));
-    } catch (err) {
-      console.error('Failed to remove custom item from localstorage');
-    }
-  }
+  useEffect(() => {
+    window.localStorage.setItem(LS_KEY, JSON.stringify(list));
+  }, [list]);
 
   return [list, add, remove];
 }
