@@ -132,12 +132,12 @@ export default withRouter(function CharacterSelect({ history }) {
       </SelectContainer>
       <InputContainer style={styles}>
         <Input
-          placeholder="Front Text"
+          placeholder="Front"
           value={frontInput}
           onChange={e => setFrontInput(e.target.value)}
         />
         <Input
-          placeholder="Back Text"
+          placeholder="Back"
           value={backInput}
           onChange={e => setBackInput(e.target.value)}
         />
@@ -176,6 +176,7 @@ const InputContainer = styled(animated.div)`
 
   left: 16px;
   width: calc(100% - 32px);
+  max-width: calc(100% - 32px);
   background-color: black;
 
   height: 90px;
@@ -184,11 +185,13 @@ const InputContainer = styled(animated.div)`
 
 const Input = styled('input')`
   background-color: black;
-  border: 1px solid white;
+  border: 2px solid white;
   border-right: none;
   padding: 16px;
   color: white;
   font-size: 1.2rem;
+  width: 100%;
+  display: block;
 
   &::placeholder {
     color: white;
@@ -206,8 +209,8 @@ const Input = styled('input')`
 `;
 
 const InputButton = styled('button')`
-  border: 1px solid white;
-  border-left: 1px solid black;
+  border: 2px solid white;
+  border-left: 2px solid black;
   font-size: 1.2rem;
   background-color: white;
 
