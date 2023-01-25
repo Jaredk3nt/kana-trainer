@@ -103,6 +103,8 @@ export default function Deck({ deck }) {
     setCurrent(_chooseRandomCard());
   }
 
+  console.log({ current });
+
   return (
     <Container>
       <View>
@@ -116,8 +118,9 @@ export default function Deck({ deck }) {
                 }}
               >
                 <Rotator>
-                  <CardKana dim={!reverse}>{current.kana}</CardKana>
-                  <CardSound dim={reverse}>{current.sound}</CardSound>
+                  {current.sound && <CardSound dim={reverse}>{current.sound}</CardSound>}
+                  <CardKana dim={!reverse} length={current.kana.length}>{current.kana}</CardKana>
+                  <CardMeaning dim={reverse}>{current.meaning}</CardMeaning>
                 </Rotator>
               </Card>
               <Card
@@ -127,9 +130,9 @@ export default function Deck({ deck }) {
                 }}
               >
                 {reverse ? (
-                  <CardSound>{current.sound}</CardSound>
+                  <CardMeaning>{current.meaning}</CardMeaning>
                 ) : (
-                  <CardKana>{current.kana}</CardKana>
+                  <CardKana length={current.kana.length}>{current.kana}</CardKana>
                 )}
               </Card>
             </>
@@ -246,6 +249,8 @@ const Card = styled(animated.div)`
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  padding: .5rem;
 
   transition: color 0.25s ease;
   will-change: transform, opacity;
@@ -253,7 +258,25 @@ const Card = styled(animated.div)`
 `;
 
 const CardKana = styled('p')`
-  font-size: 7rem;
+  font-size: ${p => p.length > 1 ? '2.5rem' :'5rem'};
+  color: ${p => (p.dim ? 'black' : 'white')};
+  margin: 0;
+  padding: .5rem 0 2rem;
+  line-height: 1;
+
+  ${p =>
+    p.dim &&
+    `
+  text-shadow:
+   -1px -1px 0 #fff,
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff,
+     1px 1px 0 #fff;
+  `}
+`;
+
+const CardSound = styled('p')`
+  font-size: 2rem;
   color: ${p => (p.dim ? 'black' : 'white')};
   margin: 0;
   line-height: 1;
@@ -268,8 +291,9 @@ const CardKana = styled('p')`
      1px 1px 0 #fff;
   `}
 `;
-const CardSound = styled('p')`
-  font-size: 3rem;
+
+const CardMeaning = styled('p')`
+  font-size: 2rem;
   color: ${p => (p.dim ? 'black' : 'white')};
   margin: 0;
   line-height: 1;

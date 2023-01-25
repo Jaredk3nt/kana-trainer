@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useSpring, animated } from 'react-spring';
 import useLSCustomValues from '../../hooks/useLSCustomValues';
 // Data
-import kana from '../../data/kana';
+import { hiragana, katakana, kanjiVerbs } from '../../data';
 
 export default withRouter(function CharacterSelect({ history }) {
   const [customList, addCustom] = useLSCustomValues();
@@ -16,6 +16,7 @@ export default withRouter(function CharacterSelect({ history }) {
   const [characters, setCharacter] = useState({
     hiragana: [],
     katakana: [],
+    kanjiVerbs: [],
     custom: [],
   });
   const styles = useSpring({
@@ -79,12 +80,13 @@ export default withRouter(function CharacterSelect({ history }) {
   }
 
   return (
-    <>
+    <React.Fragment>
       <SelectContainer>
         <Message>
           Select the kana you want to show up in your training set, then click
           begin.
         </Message>
+
         {customList.length > 0 && (
           <>
             <SetTitle>Custom</SetTitle>
@@ -106,28 +108,67 @@ export default withRouter(function CharacterSelect({ history }) {
             </CharacterList>
           </>
         )}
-        {Object.entries(kana).map(([set, chars]) => (
-          <>
-            <SetTitle>{set}</SetTitle>
-            <CharacterList>
-              {chars.map((char, index) => {
-                const selected = isSelected(set, index);
-                return (
-                  <Character
-                    character={char}
-                    isSelected={selected}
-                    onSelect={
-                      selected
-                        ? () => removeCharacter(set, index)
-                        : () => addCharacter(set, index)
-                    }
-                  />
-                );
-              })}
-            </CharacterList>
-          </>
-        ))}
+
+        <>
+          <SetTitle>Hiragana</SetTitle>
+          <CharacterList>
+            {hiragana.map((char, index) => {
+              const selected = isSelected('hiragana', index);
+              return (
+                <Character
+                  character={char}
+                  isSelected={selected}
+                  onSelect={
+                    selected
+                      ? () => removeCharacter('hiragana', index)
+                      : () => addCharacter('hiragana', index)
+                  }
+                />
+              );
+            })}
+          </CharacterList>
+        </>
+
+        <>
+          <SetTitle>Katakana</SetTitle>
+          <CharacterList>
+            {katakana.map((char, index) => {
+              const selected = isSelected('katakana', index);
+              return (
+                <Character
+                  character={char}
+                  isSelected={selected}
+                  onSelect={
+                    selected
+                      ? () => removeCharacter('katakana', index)
+                      : () => addCharacter('katakana', index)
+                  }
+                />
+              );
+            })}
+          </CharacterList>
+        </>  
+        <>
+          <SetTitle>Kanji - Verbs</SetTitle>
+          <CharacterList>
+            {kanjiVerbs.map((char, index) => {
+              const selected = isSelected('kanjiVerbs', index);
+              return (
+                <Character
+                  character={char}
+                  isSelected={selected}
+                  onSelect={
+                    selected
+                      ? () => removeCharacter('kanjiVerbs', index)
+                      : () => addCharacter('kanjiVerbs', index)
+                  }
+                />
+              );
+            })}
+          </CharacterList>
+        </>
       </SelectContainer>
+
       <InputContainer style={styles}>
         <Input
           placeholder="Front"
@@ -163,7 +204,7 @@ export default withRouter(function CharacterSelect({ history }) {
           Begin
         </ActionButton>
       </Actions>
-    </>
+    </React.Fragment>
   );
 });
 
@@ -311,7 +352,7 @@ function Character({ character, isSelected, onSelect }) {
   return (
     <CharacterContainer selected={isSelected} onClick={onSelect}>
       <Kana selected={isSelected}>{character.kana}</Kana>
-      <Sound selected={isSelected}>{character.sound}</Sound>
+      <Meaning selected={isSelected}>{character.meaning}</Meaning>
     </CharacterContainer>
   );
 }
@@ -343,7 +384,7 @@ const Kana = styled('div')`
   line-height: 1;
 `;
 
-const Sound = styled('div')`
+const Meaning = styled('div')`
   color: ${p => (p.selected ? 'black' : 'white')};
   font-size: 1.2rem;
   line-height: 1;

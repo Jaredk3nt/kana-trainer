@@ -1,25 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { parse } from 'query-string';
 import { withRouter } from 'react-router';
 // Components
 import Deck from '../Deck';
 import useLSCustomValues from '../../hooks/useLSCustomValues';
 // Data
-import kana from '../../data/kana';
+import { hiragana, katakana, kanjiVerbs } from '../../data';
 
 function Player({ location }) {
   const [customList] = useLSCustomValues();
-  const [deck, setDeck] = useState(createDeck() || []);
+  const [deck, setDeck] = useState([]);
 
-  useEffect(() => {
-    // Call create
-    setDeck(createDeck());
-  }, [location.search]);
-
-  function createDeck() {
-    const kanaSet = { ...kana, custom: customList };
+  const createDeck = useCallback(() => {
+    const kanaSet = { hiragana, katakana, kanjiVerbs, custom: customList };
     const qs = parse(location.search, { arrayFormat: 'comma' });
-    if (!qs.sets && !qs.hiragana && !qs.katakana && !qs.custom) return [];
+    if (!qs.sets && !qs.hiragana && !qs.katakana && !qs.kanjiVerbs && !qs.custom) return [];
 
     if (qs.sets) {
       let newDeck = [];
@@ -35,7 +30,7 @@ function Player({ location }) {
       return newDeck;
     }
 
-    if (qs.hiragana || qs.katakana || qs.custom) {
+    if (qs.hiragana || qs.katakana || qs.kanjiVerbs || qs.custom) {
       let newDeck = [];
       Object.entries(qs).forEach(([set, chars]) => {
         if (Array.isArray(chars)) {
@@ -50,7 +45,14 @@ function Player({ location }) {
       });
       return newDeck;
     }
-  }
+  }, [customList, location.search]);
+
+  useEffect(() => {
+    // Call create
+    setDeck(createDeck());
+  }, [createDeck, location.search]);
+
+  console.log({ deck })
 
   return <Deck deck={deck} />;
 }

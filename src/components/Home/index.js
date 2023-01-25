@@ -13,6 +13,9 @@ export default function Home() {
         <Anchor to={{ pathname: '/kana', search: '?sets=katakana' }}>
           Katakana
         </Anchor>
+        <Anchor to={{ pathname: '/kana', search: '?sets=kanjiVerbs' }}>
+          Kanji (WIP)
+        </Anchor>
         <Anchor to={{ pathname: '/kana', search: '?sets=hiragana,katakana' }}>
           Combo
         </Anchor>
