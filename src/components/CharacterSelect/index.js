@@ -3,54 +3,41 @@ import styled from '@emotion/styled';
 import { withRouter } from 'react-router';
 import Feather from 'feathered';
 import { Link } from 'react-router-dom';
-import { useSpring, animated } from 'react-spring';
-import useLSCustomValues from '../../hooks/useLSCustomValues';
-// Data
-import { hiragana, katakana, kanjiVerbs } from '../../data';
+import useCharacterSets from '../../hooks/useCharacterSets';
+import CustomCharacterInput from './CustomCharacterInput';
 
 export default withRouter(function CharacterSelect({ history }) {
-  const [customList, addCustom] = useLSCustomValues();
+  const [characterSets] = useCharacterSets();
   const [inputVisible, setInputVisible] = useState(false);
-  const [frontInput, setFrontInput] = useState('');
-  const [backInput, setBackInput] = useState('');
-  const [characters, setCharacter] = useState({
-    hiragana: [],
-    katakana: [],
-    kanjiVerbs: [],
-    custom: [],
-  });
-  const styles = useSpring({
-    opacity: inputVisible ? '1' : '0',
-    bottom: inputVisible ? '102px' : '80px',
-    config: { mass: 5, tension: 600, friction: 60 },
-  });
+  const [selectedCharacters, setSelectedCharacters] = useState(Object.fromEntries(Object.keys(characterSets).map(key => [key, []])));
+
 
   function addCharacter(set, index) {
-    setCharacter({
-      ...characters,
-      [set]: [...characters[set], index],
+    setSelectedCharacters({
+      ...selectedCharacters,
+      [set]: [...selectedCharacters[set], index],
     });
   }
 
   function removeCharacter(set, index) {
-    const cIdx = characters[set].findIndex(item => item === index);
-    setCharacter({
-      ...characters,
+    const cIdx = selectedCharacters[set].findIndex(item => item === index);
+    setSelectedCharacters({
+      ...selectedCharacters,
       [set]: [
-        ...characters[set].slice(0, cIdx),
-        ...characters[set].slice(cIdx + 1, characters[set].length),
+        ...selectedCharacters[set].slice(0, cIdx),
+        ...selectedCharacters[set].slice(cIdx + 1, selectedCharacters[set].length),
       ],
     });
   }
 
   function isSelected(set, index) {
-    return characters[set].includes(index);
+    return selectedCharacters[set].includes(index);
   }
 
   function startPlayer() {
     history.push({
       pathname: '/kana',
-      search: `?${Object.entries(characters)
+      search: `?${Object.entries(selectedCharacters)
         .map(([set, chars]) => {
           return set + '=' + chars.join(',');
         })
@@ -63,20 +50,14 @@ export default withRouter(function CharacterSelect({ history }) {
   }
 
   function characterCount() {
-    return Object.keys(characters).reduce(
-      (acc, set) => acc + characters[set].length,
+    return Object.keys(selectedCharacters).reduce(
+      (acc, set) => acc + selectedCharacters[set].length,
       0
     );
   }
 
   function toggleInput() {
     setInputVisible(!inputVisible);
-  }
-
-  function addCustomCard() {
-    addCustom({ kana: frontInput, sound: backInput });
-    setFrontInput('');
-    setBackInput('');
   }
 
   return (
@@ -87,107 +68,30 @@ export default withRouter(function CharacterSelect({ history }) {
           begin.
         </Message>
 
-        {customList.length > 0 && (
+        {Object.entries(characterSets).map(([key, { name, set }]) => (
           <>
-            <SetTitle>Custom</SetTitle>
-            <CharacterList>
-              {customList.map((char, index) => {
-                const selected = isSelected('custom', index);
-                return (
-                  <Character
-                    character={{ kana: char.kana, sound: char.sound }}
-                    isSelected={selected}
-                    onSelect={
-                      selected
-                        ? () => removeCharacter('custom', index)
-                        : () => addCharacter('custom', index)
-                    }
-                  />
-                );
-              })}
-            </CharacterList>
-          </>
-        )}
-
-        <>
-          <SetTitle>Hiragana</SetTitle>
+          <SetTitle>{name}</SetTitle>
           <CharacterList>
-            {hiragana.map((char, index) => {
-              const selected = isSelected('hiragana', index);
+            {set.map((char, index) => {
+              const selected = isSelected(key, index);
               return (
                 <Character
                   character={char}
                   isSelected={selected}
                   onSelect={
                     selected
-                      ? () => removeCharacter('hiragana', index)
-                      : () => addCharacter('hiragana', index)
+                      ? () => removeCharacter(key, index)
+                      : () => addCharacter(key, index)
                   }
                 />
               );
             })}
           </CharacterList>
         </>
-
-        <>
-          <SetTitle>Katakana</SetTitle>
-          <CharacterList>
-            {katakana.map((char, index) => {
-              const selected = isSelected('katakana', index);
-              return (
-                <Character
-                  character={char}
-                  isSelected={selected}
-                  onSelect={
-                    selected
-                      ? () => removeCharacter('katakana', index)
-                      : () => addCharacter('katakana', index)
-                  }
-                />
-              );
-            })}
-          </CharacterList>
-        </>  
-        <>
-          <SetTitle>Kanji - Verbs</SetTitle>
-          <CharacterList>
-            {kanjiVerbs.map((char, index) => {
-              const selected = isSelected('kanjiVerbs', index);
-              return (
-                <Character
-                  character={char}
-                  isSelected={selected}
-                  onSelect={
-                    selected
-                      ? () => removeCharacter('kanjiVerbs', index)
-                      : () => addCharacter('kanjiVerbs', index)
-                  }
-                />
-              );
-            })}
-          </CharacterList>
-        </>
+        ))}
       </SelectContainer>
 
-      <InputContainer style={styles}>
-        <Input
-          placeholder="Front"
-          value={frontInput}
-          onChange={e => setFrontInput(e.target.value)}
-        />
-        <Input
-          placeholder="Back"
-          value={backInput}
-          onChange={e => setBackInput(e.target.value)}
-        />
-        <InputButton
-          disabled={!frontInput || !backInput}
-          onClick={addCustomCard}
-          type='button'
-        >
-          Add
-        </InputButton>
-      </InputContainer>
+      <CustomCharacterInput isVisible={inputVisible} />
 
       <Actions>
         <Back to="/">
@@ -208,61 +112,7 @@ export default withRouter(function CharacterSelect({ history }) {
   );
 });
 
-const InputContainer = styled(animated.div)`
-  position: fixed;
-  display: grid;
-  grid-template-columns: 1fr 1fr 25%;
 
-  left: 16px;
-  width: calc(100% - 32px);
-  max-width: calc(100% - 32px);
-  background-color: black;
-
-  height: 90px;
-  box-sizing: border-box;
-`;
-
-const Input = styled('input')`
-  background-color: black;
-  border: 2px solid white;
-  border-right: none;
-  padding: 16px;
-  color: white;
-  font-size: 1.2rem;
-  width: 100%;
-  display: block;
-
-  &::placeholder {
-    color: white;
-    font-size: 1.2rem;
-  }
-
-  &:focus {
-    background-color: white;
-    color: black;
-
-    &::placeholder {
-      color: #333;
-    }
-  }
-`;
-
-const InputButton = styled('button')`
-  border: 2px solid white;
-  border-left: 2px solid black;
-  font-size: 1.2rem;
-  background-color: white;
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  &:disabled {
-    color: #bbb;
-    background-color: black;
-    border-left: 2px solid white;
-  }
-`;
 
 const Message = styled('p')`
   color: rgba(255, 255, 255, 0.75);

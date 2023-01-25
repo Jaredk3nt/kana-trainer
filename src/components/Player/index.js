@@ -3,56 +3,51 @@ import { parse } from 'query-string';
 import { withRouter } from 'react-router';
 // Components
 import Deck from '../Deck';
-import useLSCustomValues from '../../hooks/useLSCustomValues';
-// Data
-import { hiragana, katakana, kanjiVerbs } from '../../data';
+// Hooks
+import useCharacterSets from '../../hooks/useCharacterSets';
 
 function Player({ location }) {
-  const [customList] = useLSCustomValues();
+  const [characterSets] = useCharacterSets();
   const [deck, setDeck] = useState([]);
 
   const createDeck = useCallback(() => {
-    const kanaSet = { hiragana, katakana, kanjiVerbs, custom: customList };
     const qs = parse(location.search, { arrayFormat: 'comma' });
-    if (!qs.sets && !qs.hiragana && !qs.katakana && !qs.kanjiVerbs && !qs.custom) return [];
 
-    if (qs.sets) {
-      let newDeck = [];
-      if (Array.isArray(qs.sets)) {
-        qs.sets.forEach(set => {
-          if (!kanaSet[set]) return;
-          newDeck.push(...kanaSet[set]);
-        });
-      } else {
-        if (!kanaSet[qs.sets]) return;
-        newDeck.push(...kanaSet[qs.sets]);
-      }
-      return newDeck;
-    }
+    const newDeck = [];
 
-    if (qs.hiragana || qs.katakana || qs.kanjiVerbs || qs.custom) {
-      let newDeck = [];
-      Object.entries(qs).forEach(([set, chars]) => {
-        if (Array.isArray(chars)) {
-          chars.forEach(cIndex => {
-            if (cIndex >= kanaSet[set].length) return;
-            newDeck.push(kanaSet[set][cIndex]);
+    Object.entries(qs).map(([key, value]) => {
+      if (key === 'sets') {
+        if (Array.isArray(qs.sets)) {
+          qs.sets.forEach(setKey => {
+            if (!characterSets[setKey]) return;
+            newDeck.push(...characterSets[setKey].set);
           });
         } else {
-          if (chars >= kanaSet[set].length) return;
-          newDeck.push(kanaSet[set][chars]);
+          if (!characterSets[qs.sets]) return;
+          newDeck.push(...characterSets[qs.sets].set);
         }
-      });
-      return newDeck;
-    }
-  }, [customList, location.search]);
+
+        return newDeck;
+      } else {
+          if (Array.isArray(value)) {
+            value.forEach(cIndex => {
+              if (cIndex >= characterSets[key].set.length) return;
+              newDeck.push(characterSets[key].set[cIndex]);
+            });
+          } else {
+            if (value >= characterSets[key].set.length) return;
+            newDeck.push(characterSets[key].set[value]);
+          }
+      }
+    });
+
+    return newDeck;
+  }, [characterSets, location.search]);
 
   useEffect(() => {
     // Call create
     setDeck(createDeck());
   }, [createDeck, location.search]);
-
-  console.log({ deck })
 
   return <Deck deck={deck} />;
 }

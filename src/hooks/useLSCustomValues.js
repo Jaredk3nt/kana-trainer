@@ -9,6 +9,7 @@ function useArrayState(initialArr = []) {
     setArr(prevArr => [...prevArr, item]);
   }
 
+  // TODO: actually make a way to remove them
   function remove(index) {
     setArr(prevArr => {
       return prevArr.slice(0, index) + prevArr.slice(index + 1, arr.length);
@@ -18,6 +19,7 @@ function useArrayState(initialArr = []) {
   return [arr, add, remove];
 }
 
+// TODO: make a way to make more custom sets
 export default function useLSCustomValues() {
   const [list, add, remove] = useArrayState(() => {
     try {

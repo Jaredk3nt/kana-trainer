@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Home from './components/Home';
 import Player from './components/Player';
 import CharacterSelect from './components/CharacterSelect';
+import SetSelect from './components/SetSelect';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         />
         <Container>
           <Route path="/" exact component={Home} />
+          <Route path="/sets" exact component={SetSelect} />
           <Route path="/kana" component={Player} />
           <Route path="/custom" exact component={CharacterSelect} />
         </Container>

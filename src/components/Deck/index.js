@@ -141,6 +141,7 @@ export default function Deck({ deck }) {
           )}
         </CenterContainer>
       </View>
+      
       <Actions>
         <MoreActions style={styles}>
           <ActionButton as={Link} to="/" vertical last>
@@ -150,13 +151,16 @@ export default function Deck({ deck }) {
             <Feather icon="rotate-cw" color="#fff" size={32} />
           </ActionButton>
         </MoreActions>
+
         <ActionButton onClick={toggleMenu}>
           <Feather icon="more-horizontal" color="#fff" size={32} />
         </ActionButton>
+
         <ActionButton onClick={addHeld}>
           <Feather icon="box" color="#fff" size={32} />
           {held.length}
         </ActionButton>
+
         <ActionButton onClick={toggleAnswer}>
           {visible ? (
             <Feather icon="eye-off" color="#fff" size={32} />
@@ -164,6 +168,8 @@ export default function Deck({ deck }) {
             <Feather icon="eye" color="#fff" size={32} />
           )}
         </ActionButton>
+
+        {/* TODO: disable if only one left */}
         <ActionButton last onClick={nextCard}>
           <Feather icon="arrow-right" color="#fff" size={32} />
         </ActionButton>
