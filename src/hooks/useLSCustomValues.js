@@ -1,20 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 // Variables
 const LS_KEY = 'custom-kana-trainer-values';
 
 function useArrayState(initialArr = []) {
   const [arr, setArr] = useState(initialArr);
 
-  function add(item) {
+  const add = useCallback((item) => {
     setArr(prevArr => [...prevArr, item]);
-  }
+  }, []);
 
   // TODO: actually make a way to remove them
-  function remove(index) {
+  const remove = useCallback((index) => {
     setArr(prevArr => {
-      return prevArr.slice(0, index) + prevArr.slice(index + 1, arr.length);
+      return prevArr.slice(0, index) + prevArr.slice(index + 1, prevArr.length);
     });
-  }
+  }, []);
 
   return [arr, add, remove];
 }
@@ -31,6 +31,7 @@ export default function useLSCustomValues() {
     }
   });
 
+  // Write to local storage when list changes
   useEffect(() => {
     window.localStorage.setItem(LS_KEY, JSON.stringify(list));
   }, [list]);

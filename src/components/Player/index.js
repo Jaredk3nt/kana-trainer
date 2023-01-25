@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { parse } from 'query-string';
 import { withRouter } from 'react-router';
 // Components
@@ -8,7 +8,6 @@ import useCharacterSets from '../../hooks/useCharacterSets';
 
 function Player({ location }) {
   const [characterSets] = useCharacterSets();
-  const [deck, setDeck] = useState([]);
 
   const createDeck = useCallback(() => {
     const qs = parse(location.search, { arrayFormat: 'comma' });
@@ -44,10 +43,7 @@ function Player({ location }) {
     return newDeck;
   }, [characterSets, location.search]);
 
-  useEffect(() => {
-    // Call create
-    setDeck(createDeck());
-  }, [createDeck, location.search]);
+  const deck = useMemo(() => createDeck(), [createDeck]);
 
   return <Deck deck={deck} />;
 }

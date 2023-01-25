@@ -3,17 +3,9 @@ import Feather from 'feathered';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
 import { useSpring, animated } from 'react-spring';
+
 import useKeyListener from '../../hooks/useKeyListener';
-// Variables
-const EMPTY_MESSAGE = 'おめでとうございます!';
-const KEYS = {
-  enter: 13,
-  space: 32,
-  right: 39,
-  f: 70,
-  r: 82,
-  s: 83,
-};
+import { EMPTY_MESSAGE, KEYS } from '../../constants';
 
 // TODO: add "edit" functionality to held
 export default function Deck({ deck }) {
@@ -35,7 +27,7 @@ export default function Deck({ deck }) {
     zIndex: menuOpen ? '1' : '-1',
     config: { mass: 5, tension: 500, friction: 80 },
   });
-  
+
   // Set up keybindings
   useKeyListener({
     [KEYS.enter]: nextCard,
