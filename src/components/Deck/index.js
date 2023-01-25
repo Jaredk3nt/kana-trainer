@@ -23,16 +23,19 @@ export default function Deck({ deck }) {
   const [visible, setVisible] = useState(false);
   const [current, setCurrent] = useState(undefined);
   const [menuOpen, setMenuOpen] = useState(false);
+
   const { transform } = useSpring({
     transform: `perspective(600px) rotateY(${visible ? -180 : 0}deg)`,
     config: { mass: 5, tension: 500, friction: 80, duration: 300 },
   });
+
   const styles = useSpring({
     display: menuOpen ? 'block' : 'none',
     bottom: menuOpen ? '100%' : '0%',
     zIndex: menuOpen ? '1' : '-1',
     config: { mass: 5, tension: 500, friction: 80 },
   });
+  
   // Set up keybindings
   useKeyListener({
     [KEYS.enter]: nextCard,
@@ -103,8 +106,6 @@ export default function Deck({ deck }) {
     setCurrent(_chooseRandomCard());
   }
 
-  console.log({ current });
-
   return (
     <Container>
       <View>
@@ -141,7 +142,7 @@ export default function Deck({ deck }) {
           )}
         </CenterContainer>
       </View>
-      
+
       <Actions>
         <MoreActions style={styles}>
           <ActionButton as={Link} to="/" vertical last>
