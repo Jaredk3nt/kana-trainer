@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from '@emotion/styled';
 import { withRouter } from 'react-router';
 import Feather from 'feathered';
 import { Link } from 'react-router-dom';
+
 import useCharacterSets from '../../hooks/useCharacterSets';
+import { PageContainer, ContentContainer, Message } from '../shared';
+
 import CustomCharacterInput from './CustomCharacterInput';
+import Character from './Character';
 
 export default withRouter(function CharacterSelect({ history }) {
   const [characterSets] = useCharacterSets();
   const [inputVisible, setInputVisible] = useState(false);
   const [selectedCharacters, setSelectedCharacters] = useState(Object.fromEntries(Object.keys(characterSets).map(key => [key, []])));
-
 
   function addCharacter(set, index) {
     setSelectedCharacters({
@@ -28,6 +31,23 @@ export default withRouter(function CharacterSelect({ history }) {
         ...selectedCharacters[set].slice(cIdx + 1, selectedCharacters[set].length),
       ],
     });
+  }
+
+  function toggleSet(set) {
+    setSelectedCharacters((prev) => {
+      const fullSet = characterSets[set].set;
+      if (prev[set].length === fullSet.length) {
+        return {
+          ...prev,
+          [set]: [],
+        };
+      } else {
+        return {
+          ...prev,
+          [set]: characterSets[set].set.map((_, idx) => idx),
+        };
+      }
+    })
   }
 
   function isSelected(set, index) {
@@ -60,9 +80,11 @@ export default withRouter(function CharacterSelect({ history }) {
     setInputVisible(!inputVisible);
   }
 
+  const totalSelected = useMemo(() => Object.values(selectedCharacters).flat().length, [selectedCharacters]);
+
   return (
-    <React.Fragment>
-      <SelectContainer>
+    <PageContainer>
+      <ContentContainer>
         <Message>
           Select the kana you want to show up in your training set, then click
           begin.
@@ -70,7 +92,7 @@ export default withRouter(function CharacterSelect({ history }) {
 
         {Object.entries(characterSets).map(([key, { name, set }]) => (
           <>
-          <SetTitle>{name}</SetTitle>
+          <SetTitle onClick={() => toggleSet(key)}>{name}</SetTitle>
           <CharacterList>
             {set.map((char, index) => {
               const selected = isSelected(key, index);
@@ -89,7 +111,6 @@ export default withRouter(function CharacterSelect({ history }) {
           </CharacterList>
         </>
         ))}
-      </SelectContainer>
 
       <CustomCharacterInput isVisible={inputVisible} />
 
@@ -105,30 +126,13 @@ export default withRouter(function CharacterSelect({ history }) {
           active={characterCount() > 0}
           disabled={characterCount() <= 0}
         >
-          Begin
+          Begin ({totalSelected})
         </ActionButton>
       </Actions>
-    </React.Fragment>
+      </ContentContainer>
+    </PageContainer>
   );
 });
-
-
-
-const Message = styled('p')`
-  color: rgba(255, 255, 255, 0.75);
-  margin: 0.5em 1.5em 0em 1.5em;
-`;
-
-const SelectContainer = styled('main')`
-  padding: 1.5em 1.5em 25% 1.5em;
-  box-sizing: border-box;
-  width: 100%;
-  margin-top: 50%;
-
-  @media (min-width: 800px) {
-    margin-top: 0%;
-  }
-`;
 
 const SetTitle = styled('h1')`
   color: white;
@@ -139,8 +143,10 @@ const SetTitle = styled('h1')`
 const CharacterList = styled('ul')`
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Actions = styled('nav')`
@@ -196,46 +202,4 @@ const ActionButton = styled('button')`
     background-color: #eee;
     color: white;
   }
-`;
-
-function Character({ character, isSelected, onSelect }) {
-  return (
-    <CharacterContainer selected={isSelected} onClick={onSelect}>
-      <Kana selected={isSelected}>{character.kana}</Kana>
-      <Meaning selected={isSelected}>{character.meaning}</Meaning>
-    </CharacterContainer>
-  );
-}
-
-const CharacterContainer = styled('li')`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0.25em;
-  margin: 0.5em;
-
-  transition: background-color 0.15s ease;
-
-  background-color: ${p => (p.selected ? 'white' : 'black')};
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  &:active {
-    background-color: rgba(255, 255, 255, 0.25);
-  }
-`;
-
-const Kana = styled('div')`
-  color: ${p => (p.selected ? 'black' : 'white')};
-  font-size: 1.75rem;
-  line-height: 1;
-`;
-
-const Meaning = styled('div')`
-  color: ${p => (p.selected ? 'black' : 'white')};
-  font-size: 1.2rem;
-  line-height: 1;
 `;

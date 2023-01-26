@@ -4,16 +4,23 @@ import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { animated } from 'react-spring';
 
+export const Pad = styled('div')`
+  height: 1em;
+`
+
 export const PageContainer = styled('div')`
   height: 100vh;
+  width: 100vw;
 `;
 
 export const ContentContainer = styled('div')`
+  width: 100%;  
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   overflow-y: scroll;
-  padding: 25% 0px 6em;
+  padding: 25% 0px 35%;
 `;
 
 export const Header = styled('h1')`
@@ -27,6 +34,11 @@ export const Header2 = styled('h2')`
   color: white;
   text-align: center;
   letter-spacing: 1px;
+`;
+
+export const Message = styled('p')`
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0.5em 1.5em 0em 1.5em;
 `;
 
 export const Anchors = styled('nav')`
