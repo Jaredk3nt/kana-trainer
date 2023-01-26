@@ -162,9 +162,11 @@ export default function Deck({ deck }) {
           )}
         </ActionButton>
 
-        {/* TODO: disable if only one left */}
-        <ActionButton last onClick={nextCard}>
-          <Feather icon="arrow-right" color="#fff" size={32} />
+        <ActionButton last onClick={nextCard} disabled={deck.length < 2}>
+          <Feather
+            icon="arrow-right"
+            size={32}
+          />
         </ActionButton>
       </Actions>
     </Container>
@@ -220,6 +222,11 @@ const ActionButton = styled('button')`
   &:active {
     background-color: white;
     color: black;
+  }
+
+  &:disabled {
+    color: #ffffff33;
+    background-color: black;
   }
 `;
 
