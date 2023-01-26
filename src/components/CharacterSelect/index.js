@@ -1,58 +1,15 @@
 import React, { useMemo, useState } from 'react';
-import styled from '@emotion/styled';
 import { withRouter } from 'react-router';
 import Feather from 'feathered';
 import { Link } from 'react-router-dom';
 
 import useCharacterSets from '../../hooks/useCharacterSets';
-import { PageContainer, ContentContainer, Message } from '../shared';
-
-import CustomCharacterInput from './CustomCharacterInput';
-import Character from './Character';
+import { PageContainer, ContentContainer, Message, Actions, ActionButton, CharacterList, CustomCharacterInput } from '../shared';
 
 export default withRouter(function CharacterSelect({ history }) {
   const [characterSets] = useCharacterSets();
   const [inputVisible, setInputVisible] = useState(false);
   const [selectedCharacters, setSelectedCharacters] = useState(Object.fromEntries(Object.keys(characterSets).map(key => [key, []])));
-
-  function addCharacter(set, index) {
-    setSelectedCharacters({
-      ...selectedCharacters,
-      [set]: [...selectedCharacters[set], index],
-    });
-  }
-
-  function removeCharacter(set, index) {
-    const cIdx = selectedCharacters[set].findIndex(item => item === index);
-    setSelectedCharacters({
-      ...selectedCharacters,
-      [set]: [
-        ...selectedCharacters[set].slice(0, cIdx),
-        ...selectedCharacters[set].slice(cIdx + 1, selectedCharacters[set].length),
-      ],
-    });
-  }
-
-  function toggleSet(set) {
-    setSelectedCharacters((prev) => {
-      const fullSet = characterSets[set].set;
-      if (prev[set].length === fullSet.length) {
-        return {
-          ...prev,
-          [set]: [],
-        };
-      } else {
-        return {
-          ...prev,
-          [set]: characterSets[set].set.map((_, idx) => idx),
-        };
-      }
-    })
-  }
-
-  function isSelected(set, index) {
-    return selectedCharacters[set].includes(index);
-  }
 
   function startPlayer() {
     history.push({
@@ -80,6 +37,16 @@ export default withRouter(function CharacterSelect({ history }) {
     setInputVisible(!inputVisible);
   }
 
+  const handleSetChange = (key) => {
+    return (update) => {
+      console.log({ key, update });
+      setSelectedCharacters((prev) => ({
+        ...prev,
+        [key]: update,
+      }))
+    };
+  }
+
   const totalSelected = useMemo(() => Object.values(selectedCharacters).flat().length, [selectedCharacters]);
 
   return (
@@ -91,33 +58,21 @@ export default withRouter(function CharacterSelect({ history }) {
         </Message>
 
         {Object.entries(characterSets).map(([key, { name, set }]) => (
-          <>
-          <SetTitle onClick={() => toggleSet(key)}>{name}</SetTitle>
-          <CharacterList>
-            {set.map((char, index) => {
-              const selected = isSelected(key, index);
-              return (
-                <Character
-                  character={char}
-                  isSelected={selected}
-                  onSelect={
-                    selected
-                      ? () => removeCharacter(key, index)
-                      : () => addCharacter(key, index)
-                  }
-                />
-              );
-            })}
-          </CharacterList>
-        </>
+          <CharacterList
+            setKey={key}
+            name={name}
+            set={set}
+            selected={selectedCharacters[key]}
+            onChange={handleSetChange(key)}
+          />
         ))}
 
       <CustomCharacterInput isVisible={inputVisible} />
 
-      <Actions>
-        <Back to="/">
+      <Actions items={3}>
+        <ActionButton as={Link} to="/">
           <Feather icon="home" color="#fff" size={32} />
-        </Back>
+        </ActionButton>
         <ActionButton onClick={toggleInput}>
           <Feather icon="edit" color="#fff" size={32} />
         </ActionButton>
@@ -133,73 +88,3 @@ export default withRouter(function CharacterSelect({ history }) {
     </PageContainer>
   );
 });
-
-const SetTitle = styled('h1')`
-  color: white;
-  text-transform: capitalize;
-  margin: 0.5em 0.75em 0em 0.75em;
-`;
-
-const CharacterList = styled('ul')`
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Actions = styled('nav')`
-  position: fixed;
-  display: grid;
-  grid-template-columns: 25% 25% 1fr;
-  bottom: 16px;
-  left: 16px;
-  width: calc(100% - 32px);
-  background-color: white;
-
-  height: 70px;
-  box-sizing: border-box;
-`;
-
-const Back = styled(Link)`
-  font-size: 1.2rem;
-  height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid white;
-  background-color: black;
-  box-sizing: border-box;
-  text-decoration: none;
-
-  &:hover {
-    cursor: pointer;
-  }
-  &:active {
-    background-color: #eee;
-  }
-`;
-
-const ActionButton = styled('button')`
-  border: 2px solid white;
-  border-left: none;
-  font-size: 1.2rem;
-  height: 100%;
-  width: 100%;
-  box-sizing: border-box;
-
-  transition: background-color 0.5 ease;
-
-  color: ${p => (p.active ? 'black' : '#bbb')};
-  background-color: ${p => (p.active ? 'white' : 'black')};
-
-  &:hover {
-    cursor: pointer;
-  }
-  &:active {
-    background-color: #eee;
-    color: white;
-  }
-`;

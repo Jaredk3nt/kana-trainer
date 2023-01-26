@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { animated } from 'react-spring';
 
+export { default as Character } from './Character';
+export { default as CharacterList } from './CharacterList';
+export { default as CustomCharacterInput } from './CustomCharacterInput';
+
 export const Pad = styled('div')`
   height: 1em;
 `
@@ -102,7 +106,8 @@ export const Actions = styled('nav')`
 export const ActionButton = styled('button')`
   position: relative;
   background-color: transparent;
-  color: white;
+  color: ${p => p.active ? 'black' : 'white'};
+  background-color: ${p => p.active ? 'white' : 'black'};
   border: none;
   font-size: 1.25rem;
   border-right: 2px solid white;
@@ -112,7 +117,6 @@ export const ActionButton = styled('button')`
   height: 100%;
   min-height: 67px;
   box-sizing: border-box;
-  background-color: black;
   width: 100%;
 
   ${p => p.vertical && `border-right: none; border-top: 2px solid white;`}

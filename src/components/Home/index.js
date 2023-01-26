@@ -8,7 +8,7 @@ export default function Home() {
       <ContentContainer>
         <Header>Kana Trainer</Header>
         <Anchors>
-          <Anchor to={{ pathname: '/kana', search: '?sets=custom' }}>
+          <Anchor to="/my-characters">
             My Characters
           </Anchor>
           <Anchor to={{ pathname: '/kana', search: '?sets=hiragana' }}>

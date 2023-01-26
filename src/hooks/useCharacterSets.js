@@ -3,7 +3,7 @@ import { characterSets } from "../constants";
 
 // TODO: fix lag on LS custom values appearing
 export default function useCharacterSets() {
-  const [list, add, remove] = useLSCustomValues();
+  const { list, add, remove } = useLSCustomValues();
 
   return [{
     custom: {

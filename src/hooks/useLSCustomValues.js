@@ -6,13 +6,14 @@ function useArrayState(initialArr = []) {
   const [arr, setArr] = useState(initialArr);
 
   const add = useCallback((item) => {
+    console.log('updating state')
     setArr(prevArr => [...prevArr, item]);
   }, []);
 
-  // TODO: actually make a way to remove them
   const remove = useCallback((index) => {
     setArr(prevArr => {
-      return prevArr.slice(0, index) + prevArr.slice(index + 1, prevArr.length);
+      console.log({ prevArr, index, newArr: prevArr.slice(0, index) + prevArr.slice(index + 1) });
+      return [...prevArr.slice(0, index), ...prevArr.slice(index + 1, prevArr.length)];
     });
   }, []);
 
@@ -20,12 +21,13 @@ function useArrayState(initialArr = []) {
 }
 
 // TODO: make a way to make more custom sets
+// TODO: make this a context value!!!!!!!
 export default function useLSCustomValues() {
   const [list, add, remove] = useArrayState(() => {
     try {
       const ls = window.localStorage.getItem(LS_KEY);
       const val = ls ? JSON.parse(ls) : [];
-      return val;
+      return Array.isArray(val) ? val : [];
     } catch (err) {
       return [];
     }
@@ -33,8 +35,11 @@ export default function useLSCustomValues() {
 
   // Write to local storage when list changes
   useEffect(() => {
+    console.log('updating list');
     window.localStorage.setItem(LS_KEY, JSON.stringify(list));
   }, [list]);
 
-  return [list, add, remove];
+  console.log({ list })
+
+  return { list, add, remove };
 }

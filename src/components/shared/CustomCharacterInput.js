@@ -9,7 +9,7 @@ export default function CustomCharacterInput({ isVisible }) {
   const [meaning, setMeaning] = useState('');
   const [sound, setSound] = useState('');
 
-  const [_, addCharacter] = useLSCustomValues();
+  const { add } = useLSCustomValues();
 
   const styles = useSpring({
     opacity: isVisible ? '1' : '0',
@@ -24,7 +24,7 @@ export default function CustomCharacterInput({ isVisible }) {
   }
 
   function addCustomCard() {
-    addCharacter({ kana: character, meaning, sound });
+    add({ kana: character, meaning, sound });
     clearInputs();
   }
 
@@ -59,7 +59,7 @@ export default function CustomCharacterInput({ isVisible }) {
 const InputContainer = styled(animated.div)`
   position: fixed;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 25%;
+  grid-template-columns: repeat(4, 1fr);
 
   left: 16px;
   width: calc(100% - 32px);
@@ -79,6 +79,7 @@ const Input = styled('input')`
   font-size: 1.2rem;
   width: 100%;
   display: block;
+  box-sizing: border-box;
 
   &::placeholder {
     color: white;

@@ -7,6 +7,7 @@ import Home from './components/Home';
 import Player from './components/Player';
 import CharacterSelect from './components/CharacterSelect';
 import SetSelect from './components/SetSelect';
+import MyCharacters from './components/MyCharacters';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/sets" exact component={SetSelect} />
           <Route path="/kana" component={Player} />
           <Route path="/custom" exact component={CharacterSelect} />
+          <Route path="/my-characters" exact component={MyCharacters} />
         </Container>
       </Fragment>
     </Router>
