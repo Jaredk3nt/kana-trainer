@@ -1,23 +1,46 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import Feather from 'feathered';
+
 import useCharacterSets from '../../hooks/useCharacterSets';
 
-import { PageContainer, Header, Anchor, Anchors } from '../shared';
+import { PageContainer, Header, Header2, Anchor, Anchors, Actions, ActionButton, ContentContainer } from '../shared';
 
 export default function SetSelect() {
   const [characterSets] = useCharacterSets();
 
+  const characterSetArr = Object.entries(characterSets);
+
   return (
     <PageContainer>
-      <Header>Select Training Set</Header>
-      <Anchors>
-        {Object.entries(characterSets).map(([key, { name, set }]) => (
-          set.length ? <Anchor to={{ pathname: '/kana', search: `?sets=${key}` }}>
-            {name}
-          </Anchor> : null
-        ))}
-        {/* TODO: use icon */}
-        <Anchor to='/' last>Home</Anchor>
-      </Anchors>
+      <ContentContainer>
+        <Header>Select Training Set</Header>
+        <Anchors>
+          <Anchor to='/custom' last>Create Custom Set</Anchor>
+        </Anchors>
+
+        <Header2>Predefined Sets</Header2>
+        <Anchors>
+          
+          {characterSetArr.map(([key, { name, set }], index) => (
+            set.length
+              ? (
+                <Anchor
+                  to={{ pathname: '/kana', search: `?sets=${key}` }}
+                  last={index === characterSetArr.length - 1}
+                >
+                  {name}
+                </Anchor>
+              ) : null
+          ))}
+        </Anchors>
+
+        <Actions items={1}>
+          <ActionButton as={Link} to="/">
+            <Feather icon="home" color="#fff" size={32} />
+          </ActionButton>
+        </Actions>
+      </ContentContainer>
     </PageContainer>
   );
 }

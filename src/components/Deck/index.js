@@ -6,6 +6,7 @@ import { useSpring, animated } from 'react-spring';
 
 import useKeyListener from '../../hooks/useKeyListener';
 import { EMPTY_MESSAGE, KEYS } from '../../constants';
+import { ActionButton, Actions, MoreActions } from '../shared';
 
 // TODO: add "edit" functionality to held
 export default function Deck({ deck }) {
@@ -178,56 +179,6 @@ const Container = styled('div')`
   height: 100%;
   display: grid;
   grid-template-rows: 1fr 86px;
-`;
-
-const MoreActions = styled(animated.nav)`
-  position: absolute;
-  bottom: 100%;
-  width: calc(25% - 2px);
-  border: 2px solid white;
-  left: -2px;
-`;
-
-const Actions = styled('nav')`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border: 2px solid white;
-  margin: 0px 16px 16px;
-  z-index: 9;
-  position: relative;
-`;
-
-const ActionButton = styled('button')`
-  position: relative;
-  background-color: transparent;
-  color: white;
-  border: none;
-  font-size: 1.25rem;
-  border-right: 2px solid white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  min-height: 67px;
-  box-sizing: border-box;
-  background-color: black;
-  width: 100%;
-
-  ${p => p.vertical && `border-right: none; border-top: 2px solid white;`}
-
-  ${p => p.last && `border: none;`}
-
-  transition: background-color .1s ease;
-
-  &:active {
-    background-color: white;
-    color: black;
-  }
-
-  &:disabled {
-    color: #ffffff33;
-    background-color: black;
-  }
 `;
 
 const View = styled('main')`
