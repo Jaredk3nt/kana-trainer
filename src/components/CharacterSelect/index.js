@@ -7,7 +7,7 @@ import useCharacterSets from '../../hooks/useCharacterSets';
 import { PageContainer, ContentContainer, Message, Actions, ActionButton, CharacterList, CustomCharacterInput, PaddedContainer } from '../shared';
 
 export default withRouter(function CharacterSelect({ history }) {
-  const [characterSets] = useCharacterSets();
+  const [characterSets, addSet] = useCharacterSets();
   const [inputVisible, setInputVisible] = useState(false);
   const [selectedCharacters, setSelectedCharacters] = useState(Object.fromEntries(Object.keys(characterSets).map(key => [key, []])));
 
@@ -39,7 +39,6 @@ export default withRouter(function CharacterSelect({ history }) {
 
   const handleSetChange = (key) => {
     return (update) => {
-      console.log({ key, update });
       setSelectedCharacters((prev) => ({
         ...prev,
         [key]: update,
@@ -47,7 +46,13 @@ export default withRouter(function CharacterSelect({ history }) {
     };
   }
 
-  const totalSelected = useMemo(() => Object.values(selectedCharacters).flat().length, [selectedCharacters]);
+  const flatSelected = useMemo(
+    () => Object.entries(selectedCharacters)
+      .map(([key, indexes]) => indexes.map(idx => characterSets[key].set[idx]))
+      .flat()
+    , [characterSets, selectedCharacters]
+  );
+  const totalSelected = flatSelected.length;
 
   return (
     <PageContainer>
@@ -73,12 +78,19 @@ export default withRouter(function CharacterSelect({ history }) {
         <CustomCharacterInput isVisible={inputVisible} />
       </PaddedContainer>
 
-      <Actions items={3}>
+      <Actions items={4}>
         <ActionButton as={Link} to="/">
           <Feather icon="home" color="#fff" size={32} />
         </ActionButton>
         <ActionButton onClick={toggleInput}>
           <Feather icon="edit" color="#fff" size={32} />
+        </ActionButton>
+        <ActionButton
+          onClick={() => addSet('My Set', flatSelected)}
+          active={characterCount() > 0}
+          disabled={characterCount() <= 0}
+        >
+          Save Set
         </ActionButton>
         <ActionButton
           onClick={startPlayer}

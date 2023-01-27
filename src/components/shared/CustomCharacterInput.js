@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from '@emotion/styled';
 import { useSpring, animated } from 'react-spring';
 
-import useLSCustomValues from "../../hooks/useLSCustomValues";
+import myCharactersContext from '../../context/myCharactersContext';
 
 export default function CustomCharacterInput({ isVisible }) {
   const [character, setCharacter] = useState('');
   const [meaning, setMeaning] = useState('');
   const [sound, setSound] = useState('');
 
-  const { add } = useLSCustomValues();
+  const { add } = useContext(myCharactersContext);
 
   const styles = useSpring({
     opacity: isVisible ? '1' : '0',

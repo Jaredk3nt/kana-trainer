@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from 'react-router-dom';
 import Feather from 'feathered';
 
-import useLSCustomValues from "../../hooks/useLSCustomValues";
-
+import myCharactersContext from "../../context/myCharactersContext";
 import { PageContainer, PaddedContainer, Message, Actions, ActionButton, ContentContainer, CharacterList, CustomCharacterInput } from '../shared';
 
 export default function MyCharacters() {
-  const { list, remove } = useLSCustomValues();
+  const { list, remove } = useContext(myCharactersContext);
 
   const [inputVisible, setInputVisible] = useState(false);
   const [selected, setSelected] = useState([]);

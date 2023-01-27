@@ -8,8 +8,15 @@ import Player from './components/Player';
 import CharacterSelect from './components/CharacterSelect';
 import SetSelect from './components/SetSelect';
 import MyCharacters from './components/MyCharacters';
+import MyCharactersContext from './context/myCharactersContext';
+import useMyCharacters from './hooks/useMyCharacters';
+import useMySets from './hooks/useMySets';
+import MySetsContext from './context/mySetsContext';
 
 function App() {
+  const { list, add, remove } = useMyCharacters();
+  const { sets, add: addSet, remove: removeSet } = useMySets();
+
   return (
     <Router>
       <Fragment>
@@ -31,13 +38,17 @@ function App() {
             }
           `}
         />
-        <Container>
-          <Route path="/" exact component={Home} />
-          <Route path="/sets" exact component={SetSelect} />
-          <Route path="/kana" component={Player} />
-          <Route path="/custom" exact component={CharacterSelect} />
-          <Route path="/my-characters" exact component={MyCharacters} />
-        </Container>
+        <MyCharactersContext.Provider value={{ list, add, remove }}>
+          <MySetsContext.Provider value={{ sets, add: addSet, remove: removeSet }}>
+            <Container>
+              <Route path="/" exact component={Home} />
+              <Route path="/sets" exact component={SetSelect} />
+              <Route path="/kana" component={Player} />
+              <Route path="/custom" exact component={CharacterSelect} />
+              <Route path="/my-characters" exact component={MyCharacters} />
+            </Container>
+          </MySetsContext.Provider>
+        </MyCharactersContext.Provider>
       </Fragment>
     </Router>
   );

@@ -1,15 +1,19 @@
-import useLSCustomValues from "./useLSCustomValues";
-import { characterSets } from "../constants";
+import { useContext } from "react";
 
-// TODO: fix lag on LS custom values appearing
+import { characterSets } from "../constants";
+import MyCharactersContext from "../context/myCharactersContext";
+import MySetsContext from "../context/mySetsContext";
+
 export default function useCharacterSets() {
-  const { list, add, remove } = useLSCustomValues();
+  const { list } = useContext(MyCharactersContext);
+  const { sets, add, remove } = useContext(MySetsContext);
 
   return [{
     custom: {
-      name: 'My Characters', // TODO: rename since custom is used for creating a set
+      name: 'My Characters',
       set: list,
     },
+    ...sets,
     ...characterSets,
   }, add, remove];
 }
