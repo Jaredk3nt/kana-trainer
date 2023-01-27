@@ -58,15 +58,17 @@ export default withRouter(function CharacterSelect({ history }) {
             begin.
           </Message>
 
-          {Object.entries(characterSets).map(([key, { name, set }]) => (
-            <CharacterList
-              setKey={key}
-              name={name}
-              set={set}
-              selected={selectedCharacters[key]}
-              onChange={handleSetChange(key)}
-            />
-          ))}
+          {Object.entries(characterSets).map(
+            ([key, { name, set }]) => set.length > 0 ? (
+              <CharacterList
+                setKey={key}
+                name={name}
+                set={set}
+                selected={selectedCharacters[key]}
+                onChange={handleSetChange(key)}
+              />
+            ) : null
+          )}
 
         <CustomCharacterInput isVisible={inputVisible} />
       </PaddedContainer>
