@@ -11,6 +11,10 @@ export default withRouter(function CharacterSelect({ history }) {
   const [inputVisible, setInputVisible] = useState(false);
   const [selectedCharacters, setSelectedCharacters] = useState(Object.fromEntries(Object.keys(characterSets).map(key => [key, []])));
 
+  const resetSelectedCharacters = () => {
+    setSelectedCharacters(Object.fromEntries(Object.keys(characterSets).map(key => [key, []])));
+  }
+
   function startPlayer() {
     history.push({
       pathname: '/kana',
@@ -44,6 +48,11 @@ export default withRouter(function CharacterSelect({ history }) {
         [key]: update,
       }))
     };
+  }
+
+  const handleSetSave = () => {
+    addSet(`My Set - ${Math.random().toFixed(2) * 100}`, flatSelected)
+    resetSelectedCharacters();
   }
 
   const flatSelected = useMemo(
@@ -86,7 +95,7 @@ export default withRouter(function CharacterSelect({ history }) {
           <Feather icon="edit" color="#fff" size={32} />
         </ActionButton>
         <ActionButton
-          onClick={() => addSet('My Set', flatSelected)}
+          onClick={handleSetSave}
           active={characterCount() > 0}
           disabled={characterCount() <= 0}
         >

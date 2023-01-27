@@ -1,4 +1,4 @@
-import { hiragana, katakana, verbs1, animals, adjectives1 } from "./data"
+import { hiragana, katakana, verbs1, animals, adjectives1, numbers } from "./data"
 
 export const characterSets = {
   hiragana: {
@@ -8,6 +8,10 @@ export const characterSets = {
   katakana: {
     name: 'Katakana',
     set: katakana,
+  },
+  numbers: {
+    name: 'Kanji - Numbers',
+    set: numbers,
   },
   verbs1: {
     name: 'Kanji - Verbs 1',

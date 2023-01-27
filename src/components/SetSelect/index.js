@@ -10,6 +10,8 @@ export default function SetSelect() {
   const [characterSets] = useCharacterSets();
 
   const characterSetArr = Object.entries(characterSets);
+  const presetSets = characterSetArr.filter(([, { custom }]) => !custom);
+  const customSets = characterSetArr.filter(([, { custom }]) => custom);
 
   return (
     <PageContainer>
@@ -21,15 +23,29 @@ export default function SetSelect() {
             <Anchor to='/custom' last>Create Custom Set</Anchor>
           </Anchors>
 
-          <Header2>Predefined Sets</Header2>
+          <Header2>My Sets</Header2>
           <Anchors>
-            
-            {characterSetArr.map(([key, { name, set }], index) => (
+            {customSets.map(([key, { name, set }], index) => (
               set.length
                 ? (
                   <Anchor
                     to={{ pathname: '/kana', search: `?sets=${key}` }}
-                    last={index === characterSetArr.length - 1}
+                    last={index === customSets.length - 1}
+                  >
+                    {name}
+                  </Anchor>
+                ) : null
+            ))}
+          </Anchors>
+
+          <Header2>Predefined Sets</Header2>
+          <Anchors>
+            {presetSets.map(([key, { name, set }], index) => (
+              set.length
+                ? (
+                  <Anchor
+                    to={{ pathname: '/kana', search: `?sets=${key}` }}
+                    last={index === presetSets.length - 1}
                   >
                     {name}
                   </Anchor>
