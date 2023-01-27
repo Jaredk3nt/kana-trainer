@@ -4,7 +4,7 @@ import Feather from 'feathered';
 
 import useLSCustomValues from "../../hooks/useLSCustomValues";
 
-import { PageContainer, Message, Actions, ActionButton, ContentContainer, CharacterList, CustomCharacterInput } from '../shared';
+import { PageContainer, PaddedContainer, Message, Actions, ActionButton, ContentContainer, CharacterList, CustomCharacterInput } from '../shared';
 
 export default function MyCharacters() {
   const { list, remove } = useLSCustomValues();
@@ -21,15 +21,15 @@ export default function MyCharacters() {
     setSelected([]);
   }
 
-  console.log(list);
-
   return (
     <PageContainer>
       <ContentContainer>
-        <Message>Add and manage custom characters you want to study</Message>
-        <CharacterList setKey='custom' name="My Characters" set={list} selected={selected} onChange={setSelected} />
+        <PaddedContainer>
+          <Message>Add and manage custom characters you want to study</Message>
+          <CharacterList setKey='custom' name="My Characters" set={list} selected={selected} onChange={setSelected} />
 
-        <CustomCharacterInput isVisible={inputVisible} />
+          <CustomCharacterInput isVisible={inputVisible} />
+        </PaddedContainer>
 
         <Actions items={3}>
           <ActionButton as={Link} to="/">

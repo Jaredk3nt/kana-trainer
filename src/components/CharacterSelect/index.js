@@ -4,7 +4,7 @@ import Feather from 'feathered';
 import { Link } from 'react-router-dom';
 
 import useCharacterSets from '../../hooks/useCharacterSets';
-import { PageContainer, ContentContainer, Message, Actions, ActionButton, CharacterList, CustomCharacterInput } from '../shared';
+import { PageContainer, ContentContainer, Message, Actions, ActionButton, CharacterList, CustomCharacterInput, PaddedContainer } from '../shared';
 
 export default withRouter(function CharacterSelect({ history }) {
   const [characterSets] = useCharacterSets();
@@ -52,22 +52,24 @@ export default withRouter(function CharacterSelect({ history }) {
   return (
     <PageContainer>
       <ContentContainer>
-        <Message>
-          Select the kana you want to show up in your training set, then click
-          begin.
-        </Message>
+        <PaddedContainer>
+          <Message>
+            Select the kana you want to show up in your training set, then click
+            begin.
+          </Message>
 
-        {Object.entries(characterSets).map(([key, { name, set }]) => (
-          <CharacterList
-            setKey={key}
-            name={name}
-            set={set}
-            selected={selectedCharacters[key]}
-            onChange={handleSetChange(key)}
-          />
-        ))}
+          {Object.entries(characterSets).map(([key, { name, set }]) => (
+            <CharacterList
+              setKey={key}
+              name={name}
+              set={set}
+              selected={selectedCharacters[key]}
+              onChange={handleSetChange(key)}
+            />
+          ))}
 
-      <CustomCharacterInput isVisible={inputVisible} />
+        <CustomCharacterInput isVisible={inputVisible} />
+      </PaddedContainer>
 
       <Actions items={3}>
         <ActionButton as={Link} to="/">

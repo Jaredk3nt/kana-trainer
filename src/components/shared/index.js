@@ -18,23 +18,36 @@ export const PageContainer = styled('div')`
 `;
 
 export const ContentContainer = styled('div')`
-  width: 100%;  
+  width: 100%;
   max-width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   overflow-y: scroll;
   padding: 25% 0px 35%;
+  box-sizing: border-box;
+
+  @media (min-width: 600px) {
+    padding: 5em 0px 15em;
+  }
+`;
+
+export const PaddedContainer = styled('div')`
+  padding: 0px 2em;
+  
+  @media (min-width: 600px) {
+    padding: 0px 5em;
+  }
 `;
 
 export const Header = styled('h1')`
-  margin: 0em 0em 1em;
+  margin: 0em 0em .5em;
   color: white;
   text-align: center;
 `;
 
 export const Header2 = styled('h2')`
-  margin: 0em 0em 1em;
+  margin: 0em 0em .5em;
   color: white;
   text-align: center;
   letter-spacing: 1px;
@@ -42,7 +55,11 @@ export const Header2 = styled('h2')`
 
 export const Message = styled('p')`
   color: rgba(255, 255, 255, 0.75);
-  margin: 0.5em 1.5em 0em 1.5em;
+  margin: 0em 0em .5em;
+
+  @media (min-width: 600px) {
+    font-size: 1.5rem;
+  }
 `;
 
 export const Anchors = styled('nav')`
@@ -53,7 +70,7 @@ export const Anchors = styled('nav')`
 `;
 
 export const Anchor = styled(Link)`
-  width: 80%;
+  width: 100%;
   border-left: 2px solid white;
   border-right: 2px solid white;
   border-top: 2px solid white;
@@ -101,6 +118,11 @@ export const Actions = styled('nav')`
   position: fixed;
   width: calc(100% - 36px);
   bottom: 16px;
+
+  @media (min-width: 600px) {
+    width: 50%;
+    margin: 0px 25%;
+  }
 `;
 
 export const ActionButton = styled('button')`

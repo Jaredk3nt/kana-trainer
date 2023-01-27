@@ -1,11 +1,12 @@
 import React from 'react';
 
-import { PageContainer, Header, Anchor, Anchors, ContentContainer } from '../shared';
+import { PageContainer, Header, Anchor, Anchors, ContentContainer, PaddedContainer } from '../shared';
 
 export default function Home() {
   return (
     <PageContainer>
       <ContentContainer>
+        <PaddedContainer>
         <Header>Kana Trainer</Header>
         <Anchors>
           <Anchor to="/my-characters">
@@ -22,6 +23,7 @@ export default function Home() {
         <Anchors>
           <Anchor to='/sets' last>All Sets</Anchor>
         </Anchors>
+        </PaddedContainer>
       </ContentContainer>
     </PageContainer>
   );
