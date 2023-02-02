@@ -6,14 +6,19 @@ import MySetsContext from "../context/mySetsContext";
 
 export default function useCharacterSets() {
   const { list } = useContext(MyCharactersContext);
-  const { sets, add, remove } = useContext(MySetsContext);
+  const { sets, add, remove, update } = useContext(MySetsContext);
 
-  return [{
-    custom: {
-      name: 'My Characters',
-      set: list,
+  return {
+    sets: {
+      custom: {
+        name: 'My Characters',
+        set: list,
+      },
+      ...sets,
+      ...characterSets,
     },
-    ...sets,
-    ...characterSets,
-  }, add, remove];
+    add,
+    remove,
+    update,
+  };
 }

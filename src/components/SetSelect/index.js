@@ -7,7 +7,7 @@ import useCharacterSets from '../../hooks/useCharacterSets';
 import { PageContainer, Header2, Message, Pad, Anchor, Anchors, Actions, ActionButton, ContentContainer, PaddedContainer } from '../shared';
 
 export default function SetSelect() {
-  const [characterSets] = useCharacterSets();
+  const { sets: characterSets } = useCharacterSets();
 
   const characterSetArr = Object.entries(characterSets);
   const presetSets = characterSetArr.filter(([, { custom }]) => !custom);
@@ -29,7 +29,7 @@ export default function SetSelect() {
               set.length
                 ? (
                   <Anchor
-                    to={{ pathname: '/kana', search: `?sets=${key}` }}
+                    to={{ pathname: '/set', search: `?set=${key}` }}
                     last={index === customSets.length - 1}
                   >
                     {name}

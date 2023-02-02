@@ -6,6 +6,7 @@ import { animated } from 'react-spring';
 
 export { default as Character } from './Character';
 export { default as CharacterList } from './CharacterList';
+export { default as CharacterSet } from './CharacterSet';
 export { default as CustomCharacterInput } from './CustomCharacterInput';
 
 export const Pad = styled('div')`
@@ -140,6 +141,7 @@ export const ActionButton = styled('button')`
   min-height: 67px;
   box-sizing: border-box;
   width: 100%;
+  cursor: pointer;
 
   ${p => p.vertical && `border-right: none; border-top: 2px solid white;`}
 
@@ -155,6 +157,7 @@ export const ActionButton = styled('button')`
   &:disabled {
     color: #ffffff33;
     background-color: black;
+    cursor: not-allowed;
   }
 `;
 

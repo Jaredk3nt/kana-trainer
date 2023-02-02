@@ -4,4 +4,5 @@ export default React.createContext({
   sets: {},
   add: () => {},
   remove: () => {},
+  update: () => {},
 });

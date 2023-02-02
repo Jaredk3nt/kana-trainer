@@ -16,11 +16,12 @@ export const verbs1 = [
 ];
 
 export const animals = [
-  { kana: '鳥', meaning: 'bird', sound: 'とり' },
+  { kana: '度物', meaning: 'animal', sound: 'どぶつ' },
   { kana: '猫', meaning: 'cat', sound: 'ねこ' },
   { kana: '犬', meaning: 'dog', sound: 'いぬ' },
-  { kana: '牛', meaning: 'cow', sound: 'うし' },
+  { kana: '鳥', meaning: 'bird', sound: 'とり' },
   { kana: '魚', meaning: 'fish', sound: 'さかな' },
+  { kana: '牛', meaning: 'cow', sound: 'うし' },
   { kana: '人', meaning: 'person', sound: 'ひと' },
 ];
 

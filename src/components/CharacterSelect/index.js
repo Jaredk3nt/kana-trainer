@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from 'react';
-import { withRouter } from 'react-router';
 import Feather from 'feathered';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import useCharacterSets from '../../hooks/useCharacterSets';
-import { PageContainer, ContentContainer, Message, Actions, ActionButton, CharacterList, CustomCharacterInput, PaddedContainer } from '../shared';
+import { PageContainer, ContentContainer, Message, Actions, ActionButton, CharacterSet, CustomCharacterInput, PaddedContainer } from '../shared';
 
-export default withRouter(function CharacterSelect({ history }) {
-  const [characterSets, addSet] = useCharacterSets();
+export default function CharacterSelect() {
+  const navigate = useNavigate();
+  const { sets: characterSets, add: addSet } = useCharacterSets();
   const [inputVisible, setInputVisible] = useState(false);
   const [selectedCharacters, setSelectedCharacters] = useState(Object.fromEntries(Object.keys(characterSets).map(key => [key, []])));
 
@@ -16,7 +16,7 @@ export default withRouter(function CharacterSelect({ history }) {
   }
 
   function startPlayer() {
-    history.push({
+    navigate({
       pathname: '/kana',
       search: `?${Object.entries(selectedCharacters)
         .map(([set, chars]) => {
@@ -50,6 +50,7 @@ export default withRouter(function CharacterSelect({ history }) {
     };
   }
 
+  // TODO: create name input
   const handleSetSave = () => {
     addSet(`My Set - ${Math.random().toFixed(2) * 100}`, flatSelected)
     resetSelectedCharacters();
@@ -72,9 +73,9 @@ export default withRouter(function CharacterSelect({ history }) {
             begin.
           </Message>
 
-          {Object.entries(characterSets).map(
+          {Object.entries(characterSets).filter(([,{ custom }]) => !custom).map(
             ([key, { name, set }]) => set.length > 0 ? (
-              <CharacterList
+              <CharacterSet
                 setKey={key}
                 name={name}
                 set={set}
@@ -99,7 +100,7 @@ export default withRouter(function CharacterSelect({ history }) {
           active={characterCount() > 0}
           disabled={characterCount() <= 0}
         >
-          Save Set
+          Save
         </ActionButton>
         <ActionButton
           onClick={startPlayer}
@@ -112,4 +113,4 @@ export default withRouter(function CharacterSelect({ history }) {
       </ContentContainer>
     </PageContainer>
   );
-});
+};

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Feather from 'feathered';
 
 import myCharactersContext from "../../context/myCharactersContext";
-import { PageContainer, PaddedContainer, Message, Actions, ActionButton, ContentContainer, CharacterList, CustomCharacterInput } from '../shared';
+import { PageContainer, PaddedContainer, Message, Actions, ActionButton, ContentContainer, CharacterSet, CustomCharacterInput } from '../shared';
 
 export default function MyCharacters() {
   const { list, remove } = useContext(myCharactersContext);
@@ -25,7 +25,7 @@ export default function MyCharacters() {
       <ContentContainer>
         <PaddedContainer>
           <Message>Add and manage custom characters you want to study</Message>
-          <CharacterList setKey='custom' name="My Characters" set={list} selected={selected} onChange={setSelected} />
+          <CharacterSet setKey='custom' name="My Characters" set={list} selected={selected} onChange={setSelected} />
 
           <CustomCharacterInput isVisible={inputVisible} />
         </PaddedContainer>

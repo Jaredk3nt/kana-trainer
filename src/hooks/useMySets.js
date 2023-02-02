@@ -36,5 +36,18 @@ export default function useMySets() {
     ))
   }, [setSets])
 
-  return { sets, add, remove };
+  const update = useCallback((key, update) => {
+    setSets((prev) => {
+      const set = prev[key];
+      return {
+        ...prev,
+        [key]: {
+          ...set,
+          ...update,
+        }
+      }
+    })
+  })
+
+  return { sets, add, remove, update };
 }
