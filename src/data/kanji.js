@@ -1,3 +1,5 @@
+// { kana: '', meaning: '', sound: '' },
+
 export const verbs1 = [
   { kana: 'いる', meaning: 'to be' },
   { kana: 'ある', meaning: 'to be (inanimate)', },
@@ -52,4 +54,33 @@ export const numbers = [
   { kana: '八', meaning: 'eight', sound: 'はち' },
   { kana: '九', meaning: 'nine', sound: 'きゅう' },
   { kana: '十', meaning: 'ten', sound: 'じゅう' },
+];
+
+export const verbs2 = [
+  { kana: '泳ぐ', meaning: '', sound: 'およぐ' },
+  { kana: '来る', meaning: '', sound: 'くる' },
+  { kana: '楽しむ', meaning: '', sound: 'たのしむ' },
+  { kana: '走る', meaning: '', sound: 'はしる' },
+  { kana: '', meaning: '', sound: '' },
+  { kana: '', meaning: '', sound: '' },
+  { kana: '', meaning: '', sound: '' },
+  { kana: '', meaning: '', sound: '' },
+];
+
+export const time = [
+  { kana: '今', meaning: 'now', sound: 'いま' },
+  { kana: '時間', meaning: 'time', sound: 'じか' },
+  { kana: '日', meaning: 'day/sun', sound: 'ひ' },
+  { kana: '今日', meaning: 'today', sound: 'きょう' },
+  { kana: '明日', meaning: 'tomorrow', sound: 'あした' },
+  { kana: '昨日', meaning: 'yesterday', sound: 'きのう' },
+  { kana: '先日', meaning: 'other day', sound: 'せんじつ' },
+  { kana: '月', meaning: 'month/moon', sound: 'げつ' },
+  { kana: '今月', meaning: 'this month', sound: 'こんげつ' },
+  { kana: '先月', meaning: 'last month', sound: 'せんげつ' },
+  { kana: '来月', meaning: 'next month', sound: 'らいげつ' },
+  { kana: '週', meaning: 'week', sound: 'しゅう' },
+  { kana: '今週', meaning: 'this week', sound: 'こんしゅう' },
+  { kana: '先週', meaning: 'last week', sound: 'せんしゅう' },
+  { kana: '来週', meaning: 'next week', sound: 'らいしゅう' },
 ];
